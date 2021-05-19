@@ -27,11 +27,11 @@ const preData = {
 
 function App() {
   const [data, setData] = useState(preData);
+  let isPause = false;
   const types = ["licensing", "suit", "resolved"];
   const color = d3.scaleOrdinal(types, d3.schemeCategory10);
   const links = data.links.map(d => Object.create(d));
   const nodes = data.nodes.map(d => Object.create(d));
-
 
   const calcConnectPoint = d => {
     const { source, target } = d;
@@ -137,16 +137,26 @@ function App() {
   const calcDate = (start, end) => {
     const sTime = new Date(start).getTime();
     const eTime = new Date(end).getTime();
-    console.log('###', (eTime - sTime) / 1000 / 60)
     return (eTime - sTime) / 1000 / 60 / 60
-
-
   };
 
+  // const handle = data => {
+  //     let result={
+  //         source:[],
+  //         target:[]
+  //     };
+  //     result.source[0]=data.source.x
+  //     result.source[1]=data.source.y
+  //     result.target[0]=data.target.x
+  //     result.target[1]=data.target.y
+  //     return result
+  // };
+
   const linkArc = d => {
-    console.log('linkArc', d)
     const r = Math.hypot(d.target.x - d.source.x, d.target.y - d.source.y);
     const point = calcConnectPoint(d);
+    // const link = d3.linkHorizontal();
+    // return link(handle(point))
     return point.type === 'A' ? `
     M${point.source.x},${point.source.y}
     A${r},${r} 1 0,${point.sweep} ${point.target.x},${point.target.y}
@@ -156,218 +166,186 @@ function App() {
   `;
   };
 
+    const getStrokeWidth = d => {
+        const isStart = data.nodes.find(item => item.id === d.__proto__.source).isStart
+        const isEnd = data.nodes.find(item => item.id === d.__proto__.target).isEnd
+        if (!isStart && !isEnd) {
+            return 1.5
+        } else {
+            return null
+        }
+    };
 
-
-  const getStrokeWidth = d => {
-    const source = d.__proto__.source
-    const target = d.__proto__.target
-    const isStart = data.nodes.find(item => item.id === d.__proto__.source).isStart
-    const isEnd = data.nodes.find(item => item.id === d.__proto__.target).isEnd
-    if (!isStart && !isEnd) {
-      return 1.5
-    } else {
-      return null
-    }
-  };
-
-  const getStrokeDash = d => {
-    const source = d.__proto__.source
-    const target = d.__proto__.target
-    const isStart = data.nodes.find(item => item.id === d.__proto__.source).isStart
-    const isEnd = data.nodes.find(item => item.id === d.__proto__.target).isEnd
-    if (isStart || isEnd) {
-      return "5,5"
-    } else {
-      return null
-    }
-  };
-
+    const getStrokeDash = d => {
+        const isStart = data.nodes.find(item => item.id === d.__proto__.source).isStart
+        const isEnd = data.nodes.find(item => item.id === d.__proto__.target).isEnd
+        if (isStart || isEnd) {
+            return "5,5"
+        } else {
+            return null
+        }
+    };
 
   const draw = () => {
-    const simulation = d3.forceSimulation(nodes)
-      .force("link", d3.forceLink(links).id(d => d.id))
-      .force("charge", d3.forceManyBody().strength(-400))
-      .force("x", d3.forceX())
-      .force("y", d3.forceY());
-    console.log('simulation', simulation);
+    d3.forceSimulation(nodes).force("link", d3.forceLink(links).id(d => d.id));
 
     const svg = d3.create('svg')
-      .attr("viewBox", [-960 / 2, -960 / 2, 960, 960])
-      .style("font", "12px sans-serif");
+        .attr("viewBox", [-960 / 2, -960 / 2, 960, 960])
+        .style("font", "12px sans-serif");
 
     svg.append("svg:defs").selectAll("marker")
-      .data(["end"])      // Different link/path types can be defined here
-      .enter().append("svg:marker")    // This section adds in the arrows
-      .attr("id", String)
-      .attr("viewBox", "0 -5 10 10")
-      .attr("refX", 9)
-      .attr("refY", 0)
-      .attr("markerWidth", 6)
-      .attr("markerHeight", 6)
-      .attr("orient", "auto")
-      .append("svg:path")
-      .attr("d", "M0,-5L10,0L0,5");
+        .data(["end"])      // Different link/path types can be defined here
+        .enter().append("svg:marker")    // This section adds in the arrows
+        .attr("id", String)
+        .attr("viewBox", "0 -5 10 10")
+        .attr("refX", 9)
+        .attr("refY", 0)
+        .attr("markerWidth", 6)
+        .attr("markerHeight", 6)
+        .attr("orient", "auto")
+        .append("svg:path")
+        .attr("d", "M0,-5L10,0L0,5");
 
-    const link = svg.append("g")
-      .attr("fill", "currentColor")
-      .attr("stroke-linecap", "round")
-      .attr("stroke-linejoin", "round")
-      .selectAll("g")
-      .data(links)
-      .join("g");
+      const link = svg.append("g")
+          .attr("fill", "currentColor")
+          .attr("stroke-linecap", "round")
+          .attr("stroke-linejoin", "round")
+          .selectAll("g")
+          .data(links)
+          .join("g");
 
-    const path = link.append("path")
-      // .attr("fill", "none")
-      // .selectAll("path")
-      // .data(links)
-      // .join("path")
-      .attr("fill", "none")
-      .attr("stroke", d => color(d.type))
-      .attr('id', d => d.id)
-      .attr("stroke-width", getStrokeWidth)
-      .attr("stroke-dasharray", getStrokeDash)
-      .attr("marker-end", "url(#end)")
-      .attr("d", linkArc);
+      const path = link.append("path")
+          .attr("fill", "none")
+          .attr("stroke", d => color(d.type))
+          .attr('id', d => d.id)
+          .attr("stroke-width", getStrokeWidth)
+          .attr("stroke-dasharray", getStrokeDash)
+          .attr("marker-end", "url(#end)")
+          .attr("d", linkArc);
 
-    let linkLabelPoint = []
-    path._groups && path._groups[0].map((item, index) => {
-      const pathLen = item.getTotalLength();
-      console.log('pathLen', pathLen)
-      const point = item.getPointAtLength(pathLen / 2);
-      linkLabelPoint.push(point)
-      links[index].linkLabelPoint = point
-    })
-    console.log('linkLabelPoint', linkLabelPoint)
+      let linkLabelPoint = []
+      path._groups && path._groups[0].map((item, index) => {
+          const pathLen = item.getTotalLength();
+          const point = item.getPointAtLength(pathLen / 2);
+          linkLabelPoint.push(point)
+          links[index].linkLabelPoint = point
+      });
 
-    link.append('rect')
-      .attr('x', d => d.linkLabelPoint.x - 20)
-      .attr('y', d => d.linkLabelPoint.y - 10)
-      .attr('width', 40).attr('height', 20)
-      .attr("fill-opacity", 0.8)
-      .attr('fill', '#fff');
+      link.append('rect')
+          .attr('x', d => d.linkLabelPoint.x - 20)
+          .attr('y', d => d.linkLabelPoint.y - 10)
+          .attr('width', 40).attr('height', 20)
+          .attr("fill-opacity", 0.8)
+          .attr('fill', '#fff');
 
-    link.append("text")
-      .text(d => `${Math.round(calcDate(d.startTime, d.endTime) * 100) / 100}hrs`)
-      .attr('x', d => d.linkLabelPoint.x - 15)
-      .attr('y', d => d.linkLabelPoint.y + 5)
-      .attr('font-size', "9px")
-      .attr('font-family', "PingFang SC")
-      .attr('font-weight', 500)
-      .clone(true).lower()
-      .attr("fill", "none")
-      .attr("stroke", "white")
-      .attr("stroke-width", 1);
+      link.append("text")
+          .text(d => `${Math.round(calcDate(d.startTime, d.endTime) * 100) / 100}hrs`)
+          .attr('x', d => d.linkLabelPoint.x - 15)
+          .attr('y', d => d.linkLabelPoint.y + 5)
+          .attr('font-size', "9px")
+          .attr('font-family', "PingFang SC")
+          .attr('font-weight', 500)
+          .clone(true).lower()
+          .attr("fill", "none")
+          .attr("stroke", "white")
+          .attr("stroke-width", 1);
 
+    svg.append('g')
+        .selectAll("circle")
+        .data(links)
+        .join('circle')
+        .attr('r',3)
+        .attr('fill','#000')
+        .append('animateMotion')
+        .attr('dur',d => `${calcDate(d.startTime,d.endTime)}s`)
+        .attr('repeatCount','indefinite')
+        .append('mpath')
+        .attr('xlink:href',d => `#${d.id}`);
 
-    const circle = link.append('circle')
-      // .selectAll("circle")
-      // .data(links)
-      // .join('circle')
-      .attr('r', 3)
-      .attr('fill', '#000')
-      .append('animateMotion')
-      .attr('dur', d => `${calcDate(d.startTime, d.endTime)}s`)
-      .append('mpath')
-      .attr('xlink:href', d => `#${d.id}`);
-
-    const node = svg.append("g")
+  const node = svg.append("g")
       .attr("fill", "currentColor")
       .attr("stroke-linecap", "round")
       .attr("stroke-linejoin", "round")
       .selectAll("g")
       .data(nodes)
-      .join("g");
-
-    node.append('rect')
-      .attr('x', d => d.x)
-      .attr('y', d => d.y)
-      .attr('width', d => d.width)
-      .attr('height', 35)
-      .attr('rx', 5)
-      .attr('ry', 5)
-      .attr("stroke", "#F7DFB9")
-      .attr("stroke-width", 0.5)
-      .attr('fill', '#fff');
-
-    node.append('rect')
-      .attr('x', d => d.x + 7.5)
-      .attr('y', d => d.y + 7.5)
-      .attr('width', 20)
-      .attr('height', 20)
-      .attr('rx', 5)
-      .attr('ry', 5)
-      .attr("stroke", "black")
-      .attr("stroke-width", 0.1)
-      .attr('fill', '#FFB238');
-
-    node.append("text")
-      .attr("x", d => d.x + 32)
-      .attr("y", d => d.y + 16)
-      .text(d => d.id)
-      .clone(true).lower()
-      .attr('font-size', "12px")
-      .attr('font-weight', "bold")
-      .attr("fill", "none")
-      .attr("stroke", "white")
-      .attr("stroke-width", 1);
-
-    node.append("text")
-      .attr("x", d => d.x + 32)
-      .attr("y", d => d.y + 30)
-      .text(d => `${d.hrs}`)
-      .attr('font-size', "9px")
-      .attr('font-family', "PingFang SC")
-      .attr('font-weight', 500)
-      .clone(true).lower()
-      .attr("fill", "none")
-      .attr("stroke", "white")
-      .attr("stroke-width", 1);
-
-    node.append("text")
-      .attr("x", d => d.x + 80)
-      .attr("y", d => d.y + 30)
-      .text(d => `(${d.tasks})`)
-      .attr('color', "#7384A5")
-      .attr('font-size', "9px")
-      .attr('font-family', "PingFang SC")
-      .attr('font-weight', 500)
-      .clone(true).lower()
-      .attr("fill", "none")
-      .attr("stroke", "white")
-      .attr("stroke-width", 1);
-
-    let movestop = 1;
-    const button = svg.append('rect')
-      .attr('x', 20)
-      .attr('y', 300)
-      .attr('width', 40).attr('height', 20)
-      .attr('fill', '#fff')
-      .attr("stroke", "green")
-      .attr("stroke-width", 1)
-      .on("click", function () {
-        if (movestop === 1) {
-          movestop = 0;
-          svg.node().pauseAnimations();
-        } else {
-          movestop = 1;
-          svg.node().unpauseAnimations();
-        }
+      .join("g")
+      .on('click',() => {
+          if(!isPause){
+              svg.node().pauseAnimations();
+          }else{
+              svg.node().unpauseAnimations();
+          }
+          isPause = !isPause;
       });
 
+    node.append('rect')
+      .attr('x',d=> d.x)
+      .attr('y',d => d.y)
+      .attr('width',d=>d.width)
+      .attr('height',35)
+      .attr('rx',5)
+      .attr('ry',5)
+      .attr("stroke", "black")
+      .attr("stroke-width", 1.5)
+      .attr('fill','#fff');
 
+      node.append('rect')
+          .attr('x', d => d.x + 7.5)
+          .attr('y', d => d.y + 7.5)
+          .attr('width', 20)
+          .attr('height', 20)
+          .attr('rx', 5)
+          .attr('ry', 5)
+          .attr("stroke", "black")
+          .attr("stroke-width", 0.1)
+          .attr('fill', '#FFB238');
 
-    return svg.node()
+      node.append("text")
+          .attr("x", d => d.x + 32)
+          .attr("y", d => d.y + 16)
+          .text(d => d.id)
+          .clone(true).lower()
+          .attr('font-size', "12px")
+          .attr('font-weight', "bold")
+          .attr("fill", "none")
+          .attr("stroke", "white")
+          .attr("stroke-width", 1);
+
+      node.append("text")
+          .attr("x", d => d.x + 32)
+          .attr("y", d => d.y + 30)
+          .text(d => `${d.hrs}`)
+          .attr('font-size', "9px")
+          .attr('font-family', "PingFang SC")
+          .attr('font-weight', 500)
+          .clone(true).lower()
+          .attr("fill", "none")
+          .attr("stroke", "white")
+          .attr("stroke-width", 1);
+
+      node.append("text")
+          .attr("x", d => d.x + 80)
+          .attr("y", d => d.y + 30)
+          .text(d => `(${d.tasks})`)
+          .attr('color', "#7384A5")
+          .attr('font-size', "9px")
+          .attr('font-family', "PingFang SC")
+          .attr('font-weight', 500)
+          .clone(true).lower()
+          .attr("fill", "none")
+          .attr("stroke", "white")
+          .attr("stroke-width", 1);
+    return svg
   };
 
   useEffect(() => {
     const temp = document.getElementsByClassName('App')[0];
-    temp.append(draw())
-
+    temp.append(draw().node())
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  },[data]);
 
-  return (
-    <div className="App" />
+  return(
+    <div className="App"/>
   );
 }
 
