@@ -5,12 +5,13 @@ import './App.css';
 
 const preData = {
   nodes: [
-    { id: "Microsoft", x: -60, y: -180, width: 120, height: 35 },
-    { id: "Samsung", x: -80, y: -40, width: 120, height: 35 },
-    { id: "Motorola", x: -260, y: -40, width: 120, height: 35 },
-    { id: "Amazon", x: -200, y: 100, width: 120, height: 35 },
-    { id: "HTC", x: 120, y: -40, width: 120, height: 35 },
-    { id: "Apple", x: 40, y: 100, width: 120, height: 35 }
+    { id: "Microsoft", x: -60, y: -180, width: 120, height: 35, hrs: '28.4 hrs', tasks: 16, isStart: true },
+    { id: "Samsung", x: -80, y: -40, width: 120, height: 35, hrs: '90 secs', tasks: 6 },
+    { id: "Motorola", x: -260, y: -40, width: 120, height: 35, hrs: '2 mins', tasks: 64 },
+    { id: "Amazon", x: -200, y: 100, width: 120, height: 35, hrs: '60 secs', tasks: 166 },
+    { id: "HTC", x: 120, y: -40, width: 120, height: 35, hrs: '23 mins', tasks: 65 },
+    { id: "Apple", x: 40, y: 100, width: 120, height: 35, hrs: '6.4 hrs', tasks: 46 },
+    { id: "Galaxy", x: 380, y: -70, width: 120, height: 35, hrs: '6.4 hrs', tasks: 46, isEnd: true }
   ],
   links: [
     { id: 'Flow00001', taskId: 'Task00001', source: "Microsoft", target: "Samsung", type: "licensing", startTime: '2021-05-11 09:32:01', endTime: '2021-05-12 08:32:01' },
@@ -19,7 +20,8 @@ const preData = {
     { id: 'Flow00004', taskId: 'Task00001', source: "Amazon", target: "HTC", type: "suit", startTime: '2021-05-14 08:52:01', endTime: '2021-05-15 09:42:01' },
     { id: 'Flow00005', taskId: 'Task00001', source: "HTC", target: "Apple", type: "suit", startTime: '2021-05-15 09:42:01', endTime: '2021-05-16 10:32:01' },
     { id: 'Flow00006', taskId: 'Task00001', source: "Motorola", target: "HTC", type: "resolved", startTime: '2021-05-16 10:32:01', endTime: '2021-05-16 10:42:01' },
-    { id: 'Flow00007', taskId: 'Task00001', source: "Amazon", target: "Apple", type: "licensing", startTime: '2021-05-16 10:42:01', endTime: '2021-05-16 10:52:01' }
+    { id: 'Flow00007', taskId: 'Task00001', source: "Amazon", target: "Apple", type: "licensing", startTime: '2021-05-16 10:42:01', endTime: '2021-05-16 10:52:01' },
+    { id: 'Flow00008', taskId: 'Task00001', source: "Apple", target: "Galaxy", type: "licensing", startTime: '2021-05-16 10:42:01', endTime: '2021-05-16 10:55:01' }
   ]
 };
 
@@ -27,6 +29,9 @@ function App() {
   const [data, setData] = useState(preData);
   const types = ["licensing", "suit", "resolved"];
   const color = d3.scaleOrdinal(types, d3.schemeCategory10);
+  const links = data.links.map(d => Object.create(d));
+  const nodes = data.nodes.map(d => Object.create(d));
+
 
   const calcConnectPoint = d => {
     const { source, target } = d;
@@ -37,108 +42,109 @@ function App() {
       sweep: 1
     };
 
-    if((Math.abs(source.x - target.x) >= 2.5 * Math.max(source.width, target.width)) || (Math.abs(source.y - target.y) >= 5 * Math.max(source.height, target.height))){
+    if ((Math.abs(source.x - target.x) >= 2.5 * Math.max(source.width, target.width)) || (Math.abs(source.y - target.y) >= 5 * Math.max(source.height, target.height))) {
       point.type = 'A'
     }
     const distance = source.x - target.x;
 
-    if(target.y > source.y){
+    if (target.y > source.y) {
       point.source = {
-        x:source.x + (source.width / 2),
-        y:source.y + source.height
+        x: source.x + (source.width / 2),
+        y: source.y + source.height
       };
       point.target = {
-        x:target.x + (target.width / 2),
-        y:target.y
+        x: target.x + (target.width / 2),
+        y: target.y
       };
-      if(point.type === 'A'){
+      if (point.type === 'A') {
         point.sweep = 0;
-        if(distance > 0){
+        if (distance > 0) {
           point.source = {
-            x:source.x + (source.width / 2),
-            y:source.y + source.height
+            x: source.x + (source.width / 2),
+            y: source.y + source.height
           };
           point.target = {
-            x:target.x + target.width,
-            y:target.y
+            x: target.x + target.width,
+            y: target.y
           };
-        }else if(distance < 0){
+        } else if (distance < 0) {
           point.source = {
-            x:source.x + (source.width / 2),
-            y:source.y + source.height
+            x: source.x + (source.width / 2),
+            y: source.y + source.height
           };
           point.target = {
-            x:target.x,
-            y:target.y
+            x: target.x,
+            y: target.y
           };
         }
       }
-    }else if(target.y < source.y){
+    } else if (target.y < source.y) {
       point.source = {
-        x:source.x + (source.width / 2),
-        y:source.y
+        x: source.x + (source.width / 2),
+        y: source.y
       };
       point.target = {
-        x:target.x + (target.width / 2),
-        y:target.y + target.height
+        x: target.x + (target.width / 2),
+        y: target.y + target.height
       };
-      if(point.type === 'A'){
-        if(distance > 0){
+      if (point.type === 'A') {
+        if (distance > 0) {
           point.sweep = 0;
           point.source = {
-            x:source.x + (source.width / 2),
-            y:source.y
+            x: source.x + (source.width / 2),
+            y: source.y
           };
           point.target = {
-            x:target.x + target.width,
-            y:target.y +target.height
+            x: target.x + target.width,
+            y: target.y + target.height
           };
-        }else if(distance < 0){
+        } else if (distance < 0) {
           point.sweep = 1;
           point.source = {
-            x:source.x + (source.width / 2),
-            y:source.y
+            x: source.x + (source.width / 2),
+            y: source.y
           };
           point.target = {
-            x:target.x,
-            y:target.y + target.height
+            x: target.x,
+            y: target.y + target.height
           };
         }
       }
-    }else{
-      if(distance > 0){
+    } else {
+      if (distance > 0) {
         point.source = {
-          x:source.x,
-          y:point.type === 'A' ? source.y + source.height : source.y + source.height / 2
+          x: source.x,
+          y: point.type === 'A' ? source.y + source.height : source.y + source.height / 2
         };
         point.target = {
-          x:target.x + target.width,
-          y:point.type === 'A' ? target.y + target.height : target.y  + target.height / 2
+          x: target.x + target.width,
+          y: point.type === 'A' ? target.y + target.height : target.y + target.height / 2
         }
-      }else{
+      } else {
         point.source = {
-          x:source.x + source.width,
-          y:point.type === 'A' ? source.y : source.y + source.height / 2
+          x: source.x + source.width,
+          y: point.type === 'A' ? source.y : source.y + source.height / 2
         };
         point.target = {
-          x:target.x,
-          y:point.type === 'A' ? target.y : target.y  + target.height / 2
+          x: target.x,
+          y: point.type === 'A' ? target.y : target.y + target.height / 2
         }
       }
     }
     return point;
   };
 
-  const calcDate = (start,end) => {
+  const calcDate = (start, end) => {
     const sTime = new Date(start).getTime();
     const eTime = new Date(end).getTime();
-    console.log('###',(eTime - sTime) / 1000 / 60)
+    console.log('###', (eTime - sTime) / 1000 / 60)
     return (eTime - sTime) / 1000 / 60 / 60
 
 
   };
 
   const linkArc = d => {
+    console.log('linkArc', d)
     const r = Math.hypot(d.target.x - d.source.x, d.target.y - d.source.y);
     const point = calcConnectPoint(d);
     return point.type === 'A' ? `
@@ -150,57 +156,121 @@ function App() {
   `;
   };
 
-  const draw = () => {
-    const links = data.links.map(d => Object.create(d));
-    const nodes = data.nodes.map(d => Object.create(d));
 
+
+  const getStrokeWidth = d => {
+    const source = d.__proto__.source
+    const target = d.__proto__.target
+    const isStart = data.nodes.find(item => item.id === d.__proto__.source).isStart
+    const isEnd = data.nodes.find(item => item.id === d.__proto__.target).isEnd
+    if (!isStart && !isEnd) {
+      return 1.5
+    } else {
+      return null
+    }
+  };
+
+  const getStrokeDash = d => {
+    const source = d.__proto__.source
+    const target = d.__proto__.target
+    const isStart = data.nodes.find(item => item.id === d.__proto__.source).isStart
+    const isEnd = data.nodes.find(item => item.id === d.__proto__.target).isEnd
+    if (isStart || isEnd) {
+      return "5,5"
+    } else {
+      return null
+    }
+  };
+
+
+  const draw = () => {
     const simulation = d3.forceSimulation(nodes)
-        .force("link", d3.forceLink(links).id(d => d.id))
-        .force("charge", d3.forceManyBody().strength(-400))
-        .force("x", d3.forceX())
-        .force("y", d3.forceY());
-    console.log('simulation',simulation);
+      .force("link", d3.forceLink(links).id(d => d.id))
+      .force("charge", d3.forceManyBody().strength(-400))
+      .force("x", d3.forceX())
+      .force("y", d3.forceY());
+    console.log('simulation', simulation);
 
     const svg = d3.create('svg')
-        .attr("viewBox", [-960 / 2, -960 / 2, 960, 960])
-        .style("font", "12px sans-serif");
+      .attr("viewBox", [-960 / 2, -960 / 2, 960, 960])
+      .style("font", "12px sans-serif");
 
     svg.append("svg:defs").selectAll("marker")
-        .data(["end"])      // Different link/path types can be defined here
-        .enter().append("svg:marker")    // This section adds in the arrows
-        .attr("id", String)
-        .attr("viewBox", "0 -5 10 10")
-        .attr("refX", 9)
-        .attr("refY", 0)
-        .attr("markerWidth", 6)
-        .attr("markerHeight", 6)
-        .attr("orient", "auto")
-        .append("svg:path")
-        .attr("d", "M0,-5L10,0L0,5");
+      .data(["end"])      // Different link/path types can be defined here
+      .enter().append("svg:marker")    // This section adds in the arrows
+      .attr("id", String)
+      .attr("viewBox", "0 -5 10 10")
+      .attr("refX", 9)
+      .attr("refY", 0)
+      .attr("markerWidth", 6)
+      .attr("markerHeight", 6)
+      .attr("orient", "auto")
+      .append("svg:path")
+      .attr("d", "M0,-5L10,0L0,5");
 
-    svg.append("g")
-      .attr("fill", "none")
-      .attr("stroke-width", 1.5)
-      .selectAll("path")
+    const link = svg.append("g")
+      .attr("fill", "currentColor")
+      .attr("stroke-linecap", "round")
+      .attr("stroke-linejoin", "round")
+      .selectAll("g")
       .data(links)
-      .join("path")
+      .join("g");
+
+    const path = link.append("path")
+      // .attr("fill", "none")
+      // .selectAll("path")
+      // .data(links)
+      // .join("path")
+      .attr("fill", "none")
       .attr("stroke", d => color(d.type))
-      .attr('id',d => d.id)
+      .attr('id', d => d.id)
+      .attr("stroke-width", getStrokeWidth)
+      .attr("stroke-dasharray", getStrokeDash)
       .attr("marker-end", "url(#end)")
       .attr("d", linkArc);
 
-    svg.append('g')
-        .selectAll("circle")
-        .data(links)
-        .join('circle')
-        .attr('r',3)
-        .attr('fill','#000')
-        .append('animateMotion')
-        .attr('dur',d => `${calcDate(d.startTime,d.endTime)}s`)
-        .append('mpath')
-        .attr('xlink:href',d => `#${d.id}`);
+    let linkLabelPoint = []
+    path._groups && path._groups[0].map((item, index) => {
+      const pathLen = item.getTotalLength();
+      console.log('pathLen', pathLen)
+      const point = item.getPointAtLength(pathLen / 2);
+      linkLabelPoint.push(point)
+      links[index].linkLabelPoint = point
+    })
+    console.log('linkLabelPoint', linkLabelPoint)
 
-  const node = svg.append("g")
+    link.append('rect')
+      .attr('x', d => d.linkLabelPoint.x - 20)
+      .attr('y', d => d.linkLabelPoint.y - 10)
+      .attr('width', 40).attr('height', 20)
+      .attr("fill-opacity", 0.8)
+      .attr('fill', '#fff');
+
+    link.append("text")
+      .text(d => `${Math.round(calcDate(d.startTime, d.endTime) * 100) / 100}hrs`)
+      .attr('x', d => d.linkLabelPoint.x - 15)
+      .attr('y', d => d.linkLabelPoint.y + 5)
+      .attr('font-size', "9px")
+      .attr('font-family', "PingFang SC")
+      .attr('font-weight', 500)
+      .clone(true).lower()
+      .attr("fill", "none")
+      .attr("stroke", "white")
+      .attr("stroke-width", 1);
+
+
+    const circle = link.append('circle')
+      // .selectAll("circle")
+      // .data(links)
+      // .join('circle')
+      .attr('r', 3)
+      .attr('fill', '#000')
+      .append('animateMotion')
+      .attr('dur', d => `${calcDate(d.startTime, d.endTime)}s`)
+      .append('mpath')
+      .attr('xlink:href', d => `#${d.id}`);
+
+    const node = svg.append("g")
       .attr("fill", "currentColor")
       .attr("stroke-linecap", "round")
       .attr("stroke-linejoin", "round")
@@ -209,24 +279,83 @@ function App() {
       .join("g");
 
     node.append('rect')
-      .attr('x',d=> d.x)
-      .attr('y',d => d.y)
-      .attr('width',d=>d.width)
-      .attr('height',35)
-      .attr('rx',5)
-      .attr('ry',5)
+      .attr('x', d => d.x)
+      .attr('y', d => d.y)
+      .attr('width', d => d.width)
+      .attr('height', 35)
+      .attr('rx', 5)
+      .attr('ry', 5)
+      .attr("stroke", "#F7DFB9")
+      .attr("stroke-width", 0.5)
+      .attr('fill', '#fff');
+
+    node.append('rect')
+      .attr('x', d => d.x + 7.5)
+      .attr('y', d => d.y + 7.5)
+      .attr('width', 20)
+      .attr('height', 20)
+      .attr('rx', 5)
+      .attr('ry', 5)
       .attr("stroke", "black")
-      .attr("stroke-width", 1.5)
-      .attr('fill','#fff');
+      .attr("stroke-width", 0.1)
+      .attr('fill', '#FFB238');
 
     node.append("text")
-      .attr("x", d=> d.x + 20)
-      .attr("y", d => d.y + 20)
+      .attr("x", d => d.x + 32)
+      .attr("y", d => d.y + 16)
       .text(d => d.id)
+      .clone(true).lower()
+      .attr('font-size', "12px")
+      .attr('font-weight', "bold")
+      .attr("fill", "none")
+      .attr("stroke", "white")
+      .attr("stroke-width", 1);
+
+    node.append("text")
+      .attr("x", d => d.x + 32)
+      .attr("y", d => d.y + 30)
+      .text(d => `${d.hrs}`)
+      .attr('font-size', "9px")
+      .attr('font-family', "PingFang SC")
+      .attr('font-weight', 500)
       .clone(true).lower()
       .attr("fill", "none")
       .attr("stroke", "white")
       .attr("stroke-width", 1);
+
+    node.append("text")
+      .attr("x", d => d.x + 80)
+      .attr("y", d => d.y + 30)
+      .text(d => `(${d.tasks})`)
+      .attr('color', "#7384A5")
+      .attr('font-size', "9px")
+      .attr('font-family', "PingFang SC")
+      .attr('font-weight', 500)
+      .clone(true).lower()
+      .attr("fill", "none")
+      .attr("stroke", "white")
+      .attr("stroke-width", 1);
+
+    let movestop = 1;
+    const button = svg.append('rect')
+      .attr('x', 20)
+      .attr('y', 300)
+      .attr('width', 40).attr('height', 20)
+      .attr('fill', '#fff')
+      .attr("stroke", "green")
+      .attr("stroke-width", 1)
+      .on("click", function () {
+        if (movestop === 1) {
+          movestop = 0;
+          svg.node().pauseAnimations();
+        } else {
+          movestop = 1;
+          svg.node().unpauseAnimations();
+        }
+      });
+
+
+
     return svg.node()
   };
 
@@ -235,10 +364,10 @@ function App() {
     temp.append(draw())
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+  }, []);
 
-  return(
-    <div className="App"/>
+  return (
+    <div className="App" />
   );
 }
 
