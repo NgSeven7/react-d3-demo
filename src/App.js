@@ -1,11 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3'
+import { isEmpty } from 'lodash';
 
 import './App.css';
 
+const csv = [
+    {
+        id: 'case_1',
+        paths: [
+            { id: 'Flow00000', taskId: 'case_1', source: "Start", target: "Microsoft", href:'Start00001', startTime: '2021-05-11 09:32:00', endTime: '2021-05-11 15:33:01' },
+            { id: 'Flow00001', taskId: 'case_1', source: "Microsoft", target: "Samsung", href:'Flow00001', startTime: '2021-05-11 15:33:01', endTime: '2021-05-12 08:32:01' },
+            { id: 'Flow00002', taskId: 'case_1', source: "Samsung", target: "Motorola",  href:'Flow00002', startTime: '2021-05-12 09:32:01', endTime: '2021-05-12 18:32:01' },
+            { id: 'Flow00003', taskId: 'case_1', source: "Motorola", target: "Amazon",  href:'Flow00003', startTime: '2021-05-13 09:32:01', endTime: '2021-05-13 10:32:01' },
+            { id: 'Flow00004', taskId: 'case_1', source: "Amazon", target: "HTC",  href:'Flow00004', startTime: '2021-05-13 19:32:01', endTime: '2021-05-14 02:32:01' },
+            { id: 'Flow00005', taskId: 'case_1', source: "HTC", target: "Apple",  href:'Flow00005', startTime: '2021-05-14 06:32:01', endTime: '2021-05-14 08:32:01' },
+            { id: 'Flow00006', taskId: 'case_1', source: "Apple", target: "Galaxy",  href:'Flow00008', startTime: '2021-05-14 09:32:01', endTime: '2021-05-14 18:32:01' }
+        ]
+    }
+];
+
 const preData = {
   nodes: [
-    { id: "Microsoft", x: -60, y: -180, width: 120, height: 35, hrs: '28.4 hrs', tasks: 16, isStart: true },
+    { id: "Start", x: -70, y: -220, width: 120, height: 35, hrs: '28.4 hrs', tasks: 0, isStart: true },
+    { id: "Microsoft", x: -180, y: -120, width: 120, height: 35, hrs: '28.4 hrs', tasks: 16 },
+    { id: "Huawei", x: 40, y: -120, width: 120, height: 35, hrs: '28.4 hrs', tasks: 16 },
     { id: "Samsung", x: -80, y: -40, width: 120, height: 35, hrs: '90 secs', tasks: 6 },
     { id: "Motorola", x: -260, y: -40, width: 120, height: 35, hrs: '2 mins', tasks: 64 },
     { id: "Amazon", x: -200, y: 100, width: 120, height: 35, hrs: '60 secs', tasks: 166 },
@@ -13,7 +31,9 @@ const preData = {
     { id: "Apple", x: 40, y: 100, width: 120, height: 35, hrs: '6.4 hrs', tasks: 46 },
     { id: "Galaxy", x: 380, y: -70, width: 120, height: 35, hrs: '6.4 hrs', tasks: 46, isEnd: true }
   ],
-  links: [
+    links: [
+    { id: 'Start00001', taskId: 'Task00001', source: "Start", target: "Microsoft", type: "suit", startTime: '2021-05-11 09:32:00', endTime: '2021-05-11 09:32:01'},
+    { id: 'Start00002', taskId: 'Task00001', source: "Start", target: "Huawei", type: "suit", startTime: '2021-05-11 09:32:00', endTime: '2021-05-11 09:32:01'},
     { id: 'Flow00001', taskId: 'Task00001', source: "Microsoft", target: "Samsung", type: "licensing", startTime: '2021-05-11 09:32:01', endTime: '2021-05-12 08:32:01' },
     { id: 'Flow00002', taskId: 'Task00001', source: "Samsung", target: "Motorola", type: "resolved", startTime: '2021-05-12 08:32:01', endTime: '2021-05-13 07:32:01' },
     { id: 'Flow00003', taskId: 'Task00001', source: "Motorola", target: "Amazon", type: "resolved", startTime: '2021-05-13 07:32:01', endTime: '2021-05-14 08:52:01' },
@@ -28,6 +48,8 @@ const preData = {
 function App() {
   const [data, setData] = useState(preData);
   let isPause = false;
+  let isStart = false;
+  let begin = 0;
   const types = ["licensing", "suit", "resolved"];
   const color = d3.scaleOrdinal(types, d3.schemeCategory10);
   const links = data.links.map(d => Object.create(d));
@@ -177,12 +199,47 @@ function App() {
     };
 
     const getStrokeDash = d => {
-        const isStart = data.nodes.find(item => item.id === d.__proto__.source).isStart
-        const isEnd = data.nodes.find(item => item.id === d.__proto__.target).isEnd
+        const isStart = data.nodes.find(item => item.id === d.__proto__.source).isStart;
+        const isEnd = data.nodes.find(item => item.id === d.__proto__.target).isEnd;
         if (isStart || isEnd) {
             return "5,5"
         } else {
             return null
+        }
+    };
+
+    const processAnimation = svg => {
+        const timeAccumulator = d => {
+            const dur = calcDate(d.startTime, d.endTime) < 1 ? 1 : calcDate(d.startTime,d.endTime);
+            begin += dur;
+            return `${dur}s`
+        };
+
+        if(!isEmpty(csv)){
+            csv.forEach((item,csvIndex) => {
+                const { id, paths } = item;
+                const circle = svg.append('circle')
+                    .attr('id',id)
+                    .attr('r',3)
+                    .attr('fill','#000');
+
+                paths.forEach((path,index) => {
+                    const animateMotion = circle.append('animateMotion')
+                        .attr('begin',() => `${begin}s`)
+                        .attr('dur',timeAccumulator(path))
+                    if(index + 1 === paths.length){
+                        animateMotion.on('endEvent',() => {
+                            svg.selectAll(`#${id}`).remove()
+                            if(csvIndex + 1 === csv.length){
+                                isStart = false;
+                            }
+                        })
+                    }
+                    animateMotion.append('mpath')
+                        .attr('xlink:href',`#${path.href}`);
+                })
+            });
+            isStart = true
         }
     };
 
@@ -215,9 +272,9 @@ function App() {
           .join("g");
 
       const path = link.append("path")
+          .attr('id', d => d.id)
           .attr("fill", "none")
           .attr("stroke", d => color(d.type))
-          .attr('id', d => d.id)
           .attr("stroke-width", getStrokeWidth)
           .attr("stroke-dasharray", getStrokeDash)
           .attr("marker-end", "url(#end)")
@@ -250,18 +307,6 @@ function App() {
           .attr("stroke", "white")
           .attr("stroke-width", 1);
 
-    svg.append('g')
-        .selectAll("circle")
-        .data(links)
-        .join('circle')
-        .attr('r',3)
-        .attr('fill','#000')
-        .append('animateMotion')
-        .attr('dur',d => `${calcDate(d.startTime,d.endTime)}s`)
-        .attr('repeatCount','indefinite')
-        .append('mpath')
-        .attr('xlink:href',d => `#${d.id}`);
-
   const node = svg.append("g")
       .attr("fill", "currentColor")
       .attr("stroke-linecap", "round")
@@ -269,13 +314,19 @@ function App() {
       .selectAll("g")
       .data(nodes)
       .join("g")
-      .on('click',() => {
-          if(!isPause){
-              svg.node().pauseAnimations();
-          }else{
-              svg.node().unpauseAnimations();
+      .on('click',(e,d) => {
+          if(d.id === 'Start'){
+              if(isStart){
+                  if(!isPause){
+                      svg.node().pauseAnimations();
+                  }else{
+                      svg.node().unpauseAnimations();
+                  }
+                  isPause = !isPause;
+              } else {
+                  processAnimation(svg);
+              }
           }
-          isPause = !isPause;
       });
 
     node.append('rect')
