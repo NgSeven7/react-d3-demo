@@ -8,40 +8,72 @@ const csv = [
     {
         id: 'case_1',
         paths: [
-            { id: 'Flow00000', taskId: 'case_1', source: "Start", target: "Microsoft", href:'Start00001', startTime: '2021-05-11 09:32:00', endTime: '2021-05-11 15:33:01' },
-            { id: 'Flow00001', taskId: 'case_1', source: "Microsoft", target: "Samsung", href:'Flow00001', startTime: '2021-05-11 15:33:01', endTime: '2021-05-12 08:32:01' },
-            { id: 'Flow00002', taskId: 'case_1', source: "Samsung", target: "Motorola",  href:'Flow00002', startTime: '2021-05-12 09:32:01', endTime: '2021-05-12 18:32:01' },
-            { id: 'Flow00003', taskId: 'case_1', source: "Motorola", target: "Amazon",  href:'Flow00003', startTime: '2021-05-13 09:32:01', endTime: '2021-05-13 10:32:01' },
-            { id: 'Flow00004', taskId: 'case_1', source: "Amazon", target: "HTC",  href:'Flow00004', startTime: '2021-05-13 19:32:01', endTime: '2021-05-14 02:32:01' },
-            { id: 'Flow00005', taskId: 'case_1', source: "HTC", target: "Apple",  href:'Flow00005', startTime: '2021-05-14 06:32:01', endTime: '2021-05-14 08:32:01' },
-            { id: 'Flow00006', taskId: 'case_1', source: "Apple", target: "Galaxy",  href:'Flow00008', startTime: '2021-05-14 09:32:01', endTime: '2021-05-14 18:32:01' }
+            {  caseId: 'case_1', source: "Start", target: "Microsoft", href:'Start00001', startTime: '2021-05-11 09:32:00', endTime: '2021-05-11 09:32:01', pathDur: 86400, activityDur: 4000 },
+            {  caseId: 'case_1', source: "Microsoft", target: "Samsung", href:'Flow00001', startTime: '2021-05-11 15:33:01', endTime: '2021-05-12 08:32:01', pathDur: 86400, activityDur: 4000 },
+            {  caseId: 'case_1', source: "Samsung", target: "Motorola",  href:'Flow00002', startTime: '2021-05-12 09:32:01', endTime: '2021-05-12 18:32:01', pathDur: 86400, activityDur: 4000 },
+            {  caseId: 'case_1', source: "Motorola", target: "Amazon",  href:'Flow00003', startTime: '2021-05-13 09:32:01', endTime: '2021-05-13 10:32:01', pathDur: 86400, activityDur: 4000  },
+            {  caseId: 'case_1', source: "Amazon", target: "HTC",  href:'Flow00004', startTime: '2021-05-13 19:32:01', endTime: '2021-05-14 02:32:01', pathDur: 86400, activityDur: 4000  },
+            {  caseId: 'case_1', source: "HTC", target: "Apple",  href:'Flow00005', startTime: '2021-05-14 06:32:01', endTime: '2021-05-14 08:32:01', pathDur: 86400, activityDur: 4000  },
+            {  caseId: 'case_1', source: "Apple", target: "End",  href:'End00001', startTime: '2021-05-14 09:32:01', endTime: '2021-05-14 18:32:01', pathDur: 86400, activityDur: 4000  }
+        ]
+    },
+    {
+        id: 'case_2',
+        paths: [
+            {  caseId: 'case_2', source: "Start", target: "Microsoft", href:'Start00001', startTime: '2021-05-11 14:32:00', endTime: '2021-05-11 17:33:01', pathDur: 86400, activityDur: 4000 },
+            {  caseId: 'case_2', source: "Microsoft", target: "Samsung", href:'Flow00001', startTime: '2021-05-11 17:33:01', endTime: '2021-05-12 09:32:01', pathDur: 86400, activityDur: 4000 },
+            {  caseId: 'case_2', source: "Samsung", target: "Motorola",  href:'Flow00002', startTime: '2021-05-12 09:32:01', endTime: '2021-05-12 13:32:01', pathDur: 86400, activityDur: 4000 },
+            {  caseId: 'case_2', source: "Motorola", target: "HTC",  href:'Flow00006', startTime: '2021-05-13 13:32:01', endTime: '2021-05-13 23:32:01', pathDur: 86400, activityDur: 4000  },
+            {  caseId: 'case_2', source: "HTC", target: "Apple",  href:'Flow00005', startTime: '2021-05-14 23:32:01', endTime: '2021-05-14 12:32:01', pathDur: 86400, activityDur: 4000  },
+            {  caseId: 'case_2', source: "Apple", target: "End",  href:'End00001', startTime: '2021-05-14 12:32:01', endTime: '2021-05-14 22:32:01', pathDur: 86400, activityDur: 4000  }
+        ]
+    },
+    {
+        id: 'case_3',
+        paths: [
+            {  caseId: 'case_3', source: "Start", target: "Microsoft", href:'Start00001', startTime: '2021-05-12 08:32:00', endTime: '2021-05-12 17:33:01', pathDur: 86400, activityDur: 4000 },
+            {  caseId: 'case_3', source: "Microsoft", target: "Samsung", href:'Flow00001', startTime: '2021-05-12 17:33:01', endTime: '2021-05-12 23:32:01', pathDur: 86400, activityDur: 4000 },
+            {  caseId: 'case_3', source: "Samsung", target: "Motorola",  href:'Flow00002', startTime: '2021-05-12 23:32:01', endTime: '2021-05-13 13:32:01', pathDur: 86400, activityDur: 4000 },
+            {  caseId: 'case_3', source: "Motorola", target: "Amazon",  href:'Flow00003', startTime: '2021-05-13 13:32:01', endTime: '2021-05-13 22:32:01', pathDur: 86400, activityDur: 4000  },
+            {  caseId: 'case_3', source: "Amazon", target: "Apple",  href:'Flow00007', startTime: '2021-05-13 22:32:01', endTime: '2021-05-14 12:32:01', pathDur: 86400, activityDur: 4000  },
+            {  caseId: 'case_3', source: "Apple", target: "End",  href:'End00001', startTime: '2021-05-14 12:32:01', endTime: '2021-05-14 22:32:01', pathDur: 86400, activityDur: 4000, isEnd: true  }
+        ]
+    },
+    {
+        id: 'case_4',
+        paths: [
+            {  caseId: 'case_4', source: "Start", target: "Huawei", href:'Start00002', startTime: '2021-05-12 08:32:00', endTime: '2021-05-12 17:33:01', pathDur: 86400, activityDur: 4000 },
+            {  caseId: 'case_4', source: "Huawei", target: "HTC", href:'Flow00008', startTime: '2021-05-12 17:33:01', endTime: '2021-05-12 23:32:01', pathDur: 86400, activityDur: 4000 },
+            {  caseId: 'case_4', source: "HTC", target: "Apple",  href:'Flow00005', startTime: '2021-05-13 22:32:01', endTime: '2021-05-14 12:32:01', pathDur: 86400, activityDur: 4000  },
+            {  caseId: 'case_4', source: "Apple", target: "End",  href:'End00001', startTime: '2021-05-14 12:32:01', endTime: '2021-05-14 22:32:01', pathDur: 86400, activityDur: 4000  }
         ]
     }
 ];
 
 const preData = {
   nodes: [
-    { id: "Start", x: -70, y: -220, width: 120, height: 35, hrs: '28.4 hrs', tasks: 0, isStart: true },
-    { id: "Microsoft", x: -180, y: -120, width: 120, height: 35, hrs: '28.4 hrs', tasks: 16 },
-    { id: "Huawei", x: 40, y: -120, width: 120, height: 35, hrs: '28.4 hrs', tasks: 16 },
-    { id: "Samsung", x: -80, y: -40, width: 120, height: 35, hrs: '90 secs', tasks: 6 },
-    { id: "Motorola", x: -260, y: -40, width: 120, height: 35, hrs: '2 mins', tasks: 64 },
-    { id: "Amazon", x: -200, y: 100, width: 120, height: 35, hrs: '60 secs', tasks: 166 },
-    { id: "HTC", x: 120, y: -40, width: 120, height: 35, hrs: '23 mins', tasks: 65 },
-    { id: "Apple", x: 40, y: 100, width: 120, height: 35, hrs: '6.4 hrs', tasks: 46 },
-    { id: "Galaxy", x: 380, y: -70, width: 120, height: 35, hrs: '6.4 hrs', tasks: 46, isEnd: true }
+    { id: "Start", className:'start',  x: -20, y: -220, width: 30, height: 30, r: 15, isStart: true },
+    { id: "Microsoft", className:'node', x: -180, y: -120, width: 120, height: 35, hrs: '28.4 hrs', tasks: 16 },
+    { id: "Huawei", className:'node', x: 40, y: -120, width: 120, height: 35, hrs: '28.4 hrs', tasks: 16 },
+    { id: "Samsung", className:'node', x: -80, y: -40, width: 120, height: 35, hrs: '90 secs', tasks: 6 },
+    { id: "Motorola", className:'node', x: -260, y: -40, width: 120, height: 35, hrs: '2 mins', tasks: 64 },
+    { id: "Amazon", className:'node', x: -200, y: 100, width: 120, height: 35, hrs: '60 secs', tasks: 166 },
+    { id: "HTC", className:'node', x: 120, y: -40, width: 120, height: 35, hrs: '23 mins', tasks: 65 },
+    { id: "Apple", className:'node', x: 40, y: 100, width: 120, height: 35, hrs: '6.4 hrs', tasks: 46 },
+    { id: "End", className:'end', x: 380, y: -70, width: 30, height: 30, r: 15, isEnd: true }
   ],
     links: [
-    { id: 'Start00001', taskId: 'Task00001', source: "Start", target: "Microsoft", type: "suit", startTime: '2021-05-11 09:32:00', endTime: '2021-05-11 09:32:01'},
-    { id: 'Start00002', taskId: 'Task00001', source: "Start", target: "Huawei", type: "suit", startTime: '2021-05-11 09:32:00', endTime: '2021-05-11 09:32:01'},
-    { id: 'Flow00001', taskId: 'Task00001', source: "Microsoft", target: "Samsung", type: "licensing", startTime: '2021-05-11 09:32:01', endTime: '2021-05-12 08:32:01' },
-    { id: 'Flow00002', taskId: 'Task00001', source: "Samsung", target: "Motorola", type: "resolved", startTime: '2021-05-12 08:32:01', endTime: '2021-05-13 07:32:01' },
-    { id: 'Flow00003', taskId: 'Task00001', source: "Motorola", target: "Amazon", type: "resolved", startTime: '2021-05-13 07:32:01', endTime: '2021-05-14 08:52:01' },
-    { id: 'Flow00004', taskId: 'Task00001', source: "Amazon", target: "HTC", type: "suit", startTime: '2021-05-14 08:52:01', endTime: '2021-05-15 09:42:01' },
-    { id: 'Flow00005', taskId: 'Task00001', source: "HTC", target: "Apple", type: "suit", startTime: '2021-05-15 09:42:01', endTime: '2021-05-16 10:32:01' },
-    { id: 'Flow00006', taskId: 'Task00001', source: "Motorola", target: "HTC", type: "resolved", startTime: '2021-05-16 10:32:01', endTime: '2021-05-16 10:42:01' },
-    { id: 'Flow00007', taskId: 'Task00001', source: "Amazon", target: "Apple", type: "licensing", startTime: '2021-05-16 10:42:01', endTime: '2021-05-16 10:52:01' },
-    { id: 'Flow00008', taskId: 'Task00001', source: "Apple", target: "Galaxy", type: "licensing", startTime: '2021-05-16 10:42:01', endTime: '2021-05-16 10:55:01' }
+    { id: 'Start00001', taskId: 'Task00001', source: "Start", target: "Microsoft", type: "suit" },
+    { id: 'Start00002', taskId: 'Task00001', source: "Start", target: "Huawei", type: "suit" },
+    { id: 'Flow00001', className:'original', taskId: 'Task00001', source: "Microsoft", target: "Samsung", type: "licensing" },
+    { id: 'Flow00002', className:'original', taskId: 'Task00001', source: "Samsung", target: "Motorola", type: "resolved" },
+    { id: 'Flow00003', className:'original', taskId: 'Task00001', source: "Motorola", target: "Amazon", type: "resolved" },
+    { id: 'Flow00004', className:'original', taskId: 'Task00001', source: "Amazon", target: "HTC", type: "suit" },
+    { id: 'Flow00005', className:'original', taskId: 'Task00001', source: "HTC", target: "Apple", type: "suit" },
+    { id: 'Flow00006', className:'original', taskId: 'Task00001', source: "Motorola", target: "HTC", type: "resolved" },
+    { id: 'Flow00007', className:'original', taskId: 'Task00001', source: "Amazon", target: "Apple", type: "licensing" },
+    { id: 'Flow00008', className:'original', taskId: 'Task00001', source: "Huawei", target: "HTC", type: "licensing" },
+    { id: 'End00001', taskId: 'Task00001', source: "Apple", target: "End", type: "licensing" }
   ]
 };
 
@@ -50,8 +82,9 @@ function App() {
   let isPause = false;
   let isStart = false;
   let begin = 0;
-  const types = ["licensing", "suit", "resolved"];
-  const color = d3.scaleOrdinal(types, d3.schemeCategory10);
+  let startTime = '';
+  //const types = ["licensing", "suit", "resolved"];
+  //const color = d3.scaleOrdinal(types, d3.schemeCategory10);
   const links = data.links.map(d => Object.create(d));
   const nodes = data.nodes.map(d => Object.create(d));
 
@@ -156,10 +189,10 @@ function App() {
     return point;
   };
 
-  const calcDate = (start, end) => {
-    const sTime = new Date(start).getTime();
-    const eTime = new Date(end).getTime();
-    return (eTime - sTime) / 1000 / 60 / 60
+  const calcDate = dur => {
+    //const sTime = new Date(start).getTime();
+    //const eTime = new Date(end).getTime();
+    return dur / 1000 / 60 / 60 / 60
   };
 
   // const handle = data => {
@@ -189,8 +222,8 @@ function App() {
   };
 
     const getStrokeWidth = d => {
-        const isStart = data.nodes.find(item => item.id === d.__proto__.source).isStart
-        const isEnd = data.nodes.find(item => item.id === d.__proto__.target).isEnd
+        const isStart = data.nodes.find(item => item.id === d.__proto__.source).isStart;
+        const isEnd = data.nodes.find(item => item.id === d.__proto__.target).isEnd;
         if (!isStart && !isEnd) {
             return 1.5
         } else {
@@ -209,35 +242,64 @@ function App() {
     };
 
     const processAnimation = svg => {
+        svg.node().setCurrentTime(0);
         const timeAccumulator = d => {
-            const dur = calcDate(d.startTime, d.endTime) < 1 ? 1 : calcDate(d.startTime,d.endTime);
-            begin += dur;
-            return `${dur}s`
+            let dur;
+            if(d.source === 'Start' || d.target === 'End'){
+                dur = 0.1
+            }else{
+                dur = calcDate(d.pathDur) < 1 ? 1 : calcDate(d.pathDur);
+            }
+            begin  = begin + dur + calcDate(d.activityDur);
+            return dur
         };
 
         if(!isEmpty(csv)){
-            csv.forEach((item,csvIndex) => {
+            startTime = csv[0].paths[0]?.startTime;
+            csv.forEach((item, csvIndex) => {
                 const { id, paths } = item;
                 const circle = svg.append('circle')
                     .attr('id',id)
                     .attr('r',3)
-                    .attr('fill','#000');
+                    .attr("fill", "#fff");
 
-                paths.forEach((path,index) => {
-                    const animateMotion = circle.append('animateMotion')
-                        .attr('begin',() => `${begin}s`)
-                        .attr('dur',timeAccumulator(path))
-                    if(index + 1 === paths.length){
-                        animateMotion.on('endEvent',() => {
-                            svg.selectAll(`#${id}`).remove()
-                            if(csvIndex + 1 === csv.length){
-                                isStart = false;
-                            }
-                        })
+                if(!isEmpty(paths)){
+                    if(csvIndex > 0){
+                        const sTime = new Date(startTime).getTime();
+                        const eTime = new Date(paths[0].startTime).getTime();
+                        begin = calcDate(eTime - sTime)
                     }
-                    animateMotion.append('mpath')
-                        .attr('xlink:href',`#${path.href}`);
-                })
+                    paths.forEach((path,index) => {
+                        const animateMotion = circle.append('animateMotion')
+                            .attr('begin',`${begin}s`);
+                        const dur = timeAccumulator(path);
+                        animateMotion.attr('dur',`${dur}s`);
+                        animateMotion.append('mpath')
+                            .attr('xlink:href',`#${path.href}`);
+                        if(index === 0){
+                            animateMotion.on('beginEvent',() => {
+                                svg.selectAll(`#${id}`)
+                                    .attr("stroke", "red")
+                                    .attr("stroke-width", 1);
+                            })
+                        }
+                        if(index + 1 === paths.length){
+                            let end = false;
+                            animateMotion.on('endEvent',() => {
+                                if(end){
+                                    //svg.selectAll(`#${id}`).remove();
+                                    svg.selectAll(`#${id}`)
+                                        .attr('opacity',0);
+                                    if(path.isEnd){
+                                        isStart = false;
+                                        begin = 0;
+                                    }
+                                }
+                                end = !end
+                            })
+                        }
+                    })
+                }
             });
             isStart = true
         }
@@ -261,6 +323,7 @@ function App() {
         .attr("markerHeight", 6)
         .attr("orient", "auto")
         .append("svg:path")
+        .attr('fill','#bfbfbf')
         .attr("d", "M0,-5L10,0L0,5");
 
       const link = svg.append("g")
@@ -269,33 +332,36 @@ function App() {
           .attr("stroke-linejoin", "round")
           .selectAll("g")
           .data(links)
-          .join("g");
+          .join("g")
+          .attr('class',d => `${d.className || ''}`);
 
       const path = link.append("path")
           .attr('id', d => d.id)
           .attr("fill", "none")
-          .attr("stroke", d => color(d.type))
+          .attr("stroke", `#bfbfbf`)
           .attr("stroke-width", getStrokeWidth)
           .attr("stroke-dasharray", getStrokeDash)
           .attr("marker-end", "url(#end)")
           .attr("d", linkArc);
 
-      let linkLabelPoint = []
+      let linkLabelPoint = [];
       path._groups && path._groups[0].map((item, index) => {
           const pathLen = item.getTotalLength();
           const point = item.getPointAtLength(pathLen / 2);
-          linkLabelPoint.push(point)
+          linkLabelPoint.push(point);
           links[index].linkLabelPoint = point
       });
 
-      link.append('rect')
+      svg.selectAll('.original')
+          .append('rect')
           .attr('x', d => d.linkLabelPoint.x - 20)
           .attr('y', d => d.linkLabelPoint.y - 10)
           .attr('width', 40).attr('height', 20)
           .attr("fill-opacity", 0.8)
           .attr('fill', '#fff');
 
-      link.append("text")
+      svg.selectAll('.original')
+          .append("text")
           .text(d => `${Math.round(calcDate(d.startTime, d.endTime) * 100) / 100}hrs`)
           .attr('x', d => d.linkLabelPoint.x - 15)
           .attr('y', d => d.linkLabelPoint.y + 5)
@@ -314,9 +380,11 @@ function App() {
       .selectAll("g")
       .data(nodes)
       .join("g")
+      .attr('class',d => d.className)
       .on('click',(e,d) => {
           if(d.id === 'Start'){
               if(isStart){
+                  console.log(svg.node().getCurrentTime());
                   if(!isPause){
                       svg.node().pauseAnimations();
                   }else{
@@ -329,7 +397,28 @@ function App() {
           }
       });
 
-    node.append('rect')
+
+  svg.selectAll('.start')
+      .append('circle')
+      .attr('cx',d=> d.x + d.r)
+      .attr('cy',d => d.y + d.r)
+      .attr('fill','#32B16C')
+      .attr('r',d => d.r)
+      .attr("stroke", "#D6EFE2")
+      .attr("stroke-width", 5);
+
+  svg.selectAll('.end')
+      .append('circle')
+      .attr('cx',d=> d.__proto__.x + d.r)
+      .attr('cy',d => d.__proto__.y + d.r)
+      .attr('fill','#EB6100')
+      .attr('r',d => { console.log('d',d); return d.r})
+      .attr("stroke", "#eb610033")
+      .attr("stroke-width", 10);
+
+  const activity = svg.selectAll('.node');
+
+      activity.append('rect')
       .attr('x',d=> d.x)
       .attr('y',d => d.y)
       .attr('width',d=>d.width)
@@ -340,7 +429,7 @@ function App() {
       .attr("stroke-width", 1.5)
       .attr('fill','#fff');
 
-      node.append('rect')
+      activity.append('rect')
           .attr('x', d => d.x + 7.5)
           .attr('y', d => d.y + 7.5)
           .attr('width', 20)
@@ -351,7 +440,7 @@ function App() {
           .attr("stroke-width", 0.1)
           .attr('fill', '#FFB238');
 
-      node.append("text")
+      activity.append("text")
           .attr("x", d => d.x + 32)
           .attr("y", d => d.y + 16)
           .text(d => d.id)
@@ -362,7 +451,7 @@ function App() {
           .attr("stroke", "white")
           .attr("stroke-width", 1);
 
-      node.append("text")
+      activity.append("text")
           .attr("x", d => d.x + 32)
           .attr("y", d => d.y + 30)
           .text(d => `${d.hrs}`)
@@ -374,7 +463,7 @@ function App() {
           .attr("stroke", "white")
           .attr("stroke-width", 1);
 
-      node.append("text")
+      activity.append("text")
           .attr("x", d => d.x + 80)
           .attr("y", d => d.y + 30)
           .text(d => `(${d.tasks})`)
