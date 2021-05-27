@@ -272,7 +272,19 @@ function App() {
                     paths.forEach((path,index) => {
                         const animateMotion = circle.append('animateMotion')
                             .attr('begin',`${begin}s`);
+                        const link = svg.selectAll(`#${path.href}`);
+                        const linkLength = link.node().getTotalLength();
+                        const stroke = link.append('animate')
+                            .attr('attributeName','stroke')
+                            .attr('begin',`${begin}s`)
+                            .attr('values', `#FF0000, #bfbfbf`);
+                        const offset = link.append('animate')
+                            .attr('attributeName','stroke-dashoffset')
+                            .attr('begin',`${begin}s`)
+                            .attr('values', `${linkLength}, ${linkLength}`);
                         const dur = timeAccumulator(path);
+                        offset.attr('dur',`${dur}s`);
+                        stroke.attr('dur',`${dur}s`);
                         animateMotion.attr('dur',`${dur}s`);
                         animateMotion.append('mpath')
                             .attr('xlink:href',`#${path.href}`);
@@ -384,7 +396,6 @@ function App() {
       .on('click',(e,d) => {
           if(d.id === 'Start'){
               if(isStart){
-                  console.log(svg.node().getCurrentTime());
                   if(!isPause){
                       svg.node().pauseAnimations();
                   }else{
@@ -412,7 +423,7 @@ function App() {
       .attr('cx',d=> d.__proto__.x + d.r)
       .attr('cy',d => d.__proto__.y + d.r)
       .attr('fill','#EB6100')
-      .attr('r',d => { console.log('d',d); return d.r})
+      .attr('r',d => d.r)
       .attr("stroke", "#eb610033")
       .attr("stroke-width", 10);
 
