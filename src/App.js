@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 
 import './App.css';
 
-const csv = [
+const preCsv = [
     {
         id: 'case_1',
         paths: [
@@ -60,7 +60,7 @@ const preData = {
     { id: "Amazon", className:'node', x: -200, y: 100, width: 120, height: 35, hrs: '60 secs', tasks: 166 },
     { id: "HTC", className:'node', x: 120, y: -40, width: 120, height: 35, hrs: '23 mins', tasks: 65 },
     { id: "Apple", className:'node', x: 40, y: 100, width: 120, height: 35, hrs: '6.4 hrs', tasks: 46 },
-    { id: "End", className:'end', x: 380, y: -70, width: 30, height: 30, r: 15, isEnd: true }
+    { id: "End", className:'end', x: 380, y: -10, width: 30, height: 30, r: 15, isEnd: true }
   ],
     links: [
     { id: 'Start00001', taskId: 'Task00001', source: "Start", target: "Microsoft", type: "suit" },
@@ -78,18 +78,18 @@ const preData = {
 };
 
 function App() {
+  const [csv, setCsv] = useState(preCsv);
   const [data, setData] = useState(preData);
-  let isPause = false;
-  let isStart = false;
-  let begin = 0;
+  let isPause = true;
+  let isStart = true;
+  let begin = 0.1;
   let startTime = '';
-  //const types = ["licensing", "suit", "resolved"];
-  //const color = d3.scaleOrdinal(types, d3.schemeCategory10);
   const links = data.links.map(d => Object.create(d));
   const nodes = data.nodes.map(d => Object.create(d));
 
   const calcConnectPoint = d => {
     const { source, target } = d;
+    const isEndpoint = d.__proto__.target === 'End';
     let point = {
       source: {},
       target: {},
@@ -100,6 +100,7 @@ function App() {
     if ((Math.abs(source.x - target.x) >= 2.5 * Math.max(source.width, target.width)) || (Math.abs(source.y - target.y) >= 5 * Math.max(source.height, target.height))) {
       point.type = 'A'
     }
+    //calculate relative position
     const distance = source.x - target.x;
 
     if (target.y > source.y) {
@@ -113,24 +114,30 @@ function App() {
       };
       if (point.type === 'A') {
         point.sweep = 0;
+        // target's on the left
         if (distance > 0) {
           point.source = {
             x: source.x + (source.width / 2),
             y: source.y + source.height
           };
-          point.target = {
-            x: target.x + target.width,
-            y: target.y
-          };
-        } else if (distance < 0) {
+          if(!isEndpoint){
+              point.target = {
+                  x: target.x + target.width,
+                  y: target.y
+              };
+          }
+
+        } else if (distance < 0) { // target's on the right
           point.source = {
             x: source.x + (source.width / 2),
             y: source.y + source.height
           };
-          point.target = {
-            x: target.x,
-            y: target.y
-          };
+          if(!isEndpoint){
+              point.target = {
+                  x: target.x,
+                  y: target.y
+              };
+          }
         }
       }
     } else if (target.y < source.y) {
@@ -143,7 +150,7 @@ function App() {
         y: target.y + target.height
       };
       if (point.type === 'A') {
-        if (distance > 0) {
+        if (distance > 0) { // target's on the left
           point.sweep = 0;
           point.source = {
             x: source.x + (source.width / 2),
@@ -151,7 +158,7 @@ function App() {
           };
           point.target = {
             x: target.x + target.width,
-            y: target.y + target.height
+            y: !isEndpoint ? target.y + target.height : target.y + target.height / 2
           };
         } else if (distance < 0) {
           point.sweep = 1;
@@ -161,7 +168,7 @@ function App() {
           };
           point.target = {
             x: target.x,
-            y: target.y + target.height
+            y: !isEndpoint ? target.y + target.height : target.y + target.height / 2
           };
         }
       }
@@ -241,8 +248,24 @@ function App() {
         }
     };
 
+    const handleNodeClick = (d, activity) => {
+        activity
+            .select(`.${d.id}`)
+            .attr("stroke", "#4285F4");
+        console.log('handleNodeClick',d)
+    };
+
+    const handlePathClick = (d, link) => {
+        link.select(`#${d.id}`).attr("stroke", `#4285F4`);
+        console.log('handlePathClick')
+    };
+
+    const handleCaseClick = (item, circle) => {
+        circle.attr('fill','#FF0000');
+    };
+
     const processAnimation = svg => {
-        svg.node().setCurrentTime(0);
+        svg.node().pauseAnimations();
         const timeAccumulator = d => {
             let dur;
             if(d.source === 'Start' || d.target === 'End'){
@@ -261,7 +284,9 @@ function App() {
                 const circle = svg.append('circle')
                     .attr('id',id)
                     .attr('r',3)
-                    .attr("fill", "#fff");
+                    .attr("fill", "#fff")
+                    .style('display','none')
+                    .on('click', () => handleCaseClick(item, circle));
 
                 if(!isEmpty(paths)){
                     if(csvIndex > 0){
@@ -273,41 +298,48 @@ function App() {
                         const animateMotion = circle.append('animateMotion')
                             .attr('begin',`${begin}s`);
                         const link = svg.selectAll(`#${path.href}`);
+                        const g = d3.select(link.node().parentNode);
                         const linkLength = link.node().getTotalLength();
-                        const stroke = link.append('animate')
-                            .attr('attributeName','stroke')
-                            .attr('begin',`${begin}s`)
-                            .attr('values', `#FF0000, #bfbfbf`);
-                        const offset = link.append('animate')
+                        const linkPath = link.node().getAttribute('d');
+                        const animatePath = g.append('path')
+                            .attr('stroke','#FF0000')
+                            .attr('stroke-width',1.5)
+                            .attr('fill','none')
+                            .attr('d',linkPath)
+                            .attr('stroke-dashoffset',linkLength)
+                            .attr('stroke-dasharray',`${linkLength}, ${linkLength}`);
+
+                        const offset = animatePath.append('animate')
                             .attr('attributeName','stroke-dashoffset')
+                            .attr('id',d=> `${d.id}animate`)
                             .attr('begin',`${begin}s`)
-                            .attr('values', `${linkLength}, ${linkLength}`);
+                            .attr('values', `${linkLength}; 0`);
+                        link.append('animate')
+                            .attr('attributeName','stroke')
+                            .attr('begin',d => `${d.id}animate.end`)
+                            .attr('dur',`2s`)
+                            .attr('values', '#FF0000; #bfbfbf');
                         const dur = timeAccumulator(path);
                         offset.attr('dur',`${dur}s`);
-                        stroke.attr('dur',`${dur}s`);
                         animateMotion.attr('dur',`${dur}s`);
                         animateMotion.append('mpath')
                             .attr('xlink:href',`#${path.href}`);
                         if(index === 0){
                             animateMotion.on('beginEvent',() => {
                                 svg.selectAll(`#${id}`)
+                                    .style('display','block')
                                     .attr("stroke", "red")
                                     .attr("stroke-width", 1);
                             })
                         }
                         if(index + 1 === paths.length){
-                            let end = false;
                             animateMotion.on('endEvent',() => {
-                                if(end){
-                                    //svg.selectAll(`#${id}`).remove();
                                     svg.selectAll(`#${id}`)
-                                        .attr('opacity',0);
+                                        .style('display','none');
                                     if(path.isEnd){
                                         isStart = false;
                                         begin = 0;
                                     }
-                                }
-                                end = !end
                             })
                         }
                     })
@@ -335,7 +367,7 @@ function App() {
         .attr("markerHeight", 6)
         .attr("orient", "auto")
         .append("svg:path")
-        .attr('fill','#bfbfbf')
+        .attr('fill', '#bfbfbf')
         .attr("d", "M0,-5L10,0L0,5");
 
       const link = svg.append("g")
@@ -354,7 +386,8 @@ function App() {
           .attr("stroke-width", getStrokeWidth)
           .attr("stroke-dasharray", getStrokeDash)
           .attr("marker-end", "url(#end)")
-          .attr("d", linkArc);
+          .attr("d", linkArc)
+          .on('click',(e,d) => handlePathClick(d,link));
 
       let linkLabelPoint = [];
       path._groups && path._groups[0].map((item, index) => {
@@ -368,7 +401,8 @@ function App() {
           .append('rect')
           .attr('x', d => d.linkLabelPoint.x - 20)
           .attr('y', d => d.linkLabelPoint.y - 10)
-          .attr('width', 40).attr('height', 20)
+          .attr('width', 40)
+          .attr('height', 20)
           .attr("fill-opacity", 0.8)
           .attr('fill', '#fff');
 
@@ -385,7 +419,7 @@ function App() {
           .attr("stroke", "white")
           .attr("stroke-width", 1);
 
-  const node = svg.append("g")
+  svg.append("g")
       .attr("fill", "currentColor")
       .attr("stroke-linecap", "round")
       .attr("stroke-linejoin", "round")
@@ -403,7 +437,8 @@ function App() {
                   }
                   isPause = !isPause;
               } else {
-                  processAnimation(svg);
+                  svg.node().setCurrentTime(0);
+                  isStart = true;
               }
           }
       });
@@ -427,13 +462,16 @@ function App() {
       .attr("stroke", "#eb610033")
       .attr("stroke-width", 10);
 
-  const activity = svg.selectAll('.node');
+  const activity = svg.selectAll('.node')
+      .style('user-select', 'none')
+      .on('click',(e,d) => handleNodeClick(d, activity));
 
       activity.append('rect')
+      .attr('class',d => d.id)
       .attr('x',d=> d.x)
       .attr('y',d => d.y)
-      .attr('width',d=>d.width)
-      .attr('height',35)
+      .attr('width',d => d.width)
+      .attr('height',d => d.height)
       .attr('rx',5)
       .attr('ry',5)
       .attr("stroke", "black")
@@ -486,6 +524,7 @@ function App() {
           .attr("fill", "none")
           .attr("stroke", "white")
           .attr("stroke-width", 1);
+      processAnimation(svg);
     return svg
   };
 
