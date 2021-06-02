@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3'
-import { isEmpty } from 'lodash';
+import { isEmpty, findIndex } from 'lodash';
 
 import './App.css';
 
@@ -80,6 +80,7 @@ const preData = {
 function App() {
   const [csv, setCsv] = useState(preCsv);
   const [data, setData] = useState(preData);
+  let animatedPath = [];
   let isPause = true;
   let isStart = true;
   let begin = 0.1;
@@ -277,6 +278,15 @@ function App() {
             return dur
         };
 
+        const handleBegin = path => {
+            animatedPath.push(path.id);
+        };
+
+        const handleEnd = path => {
+            const index = findIndex(animatedPath,item => item === path.id);
+            //animatedPath[index].remove();
+        };
+
         if(!isEmpty(csv)){
             startTime = csv[0].paths[0]?.startTime;
             csv.forEach((item, csvIndex) => {
@@ -308,7 +318,6 @@ function App() {
                             .attr('d',linkPath)
                             .attr('stroke-dashoffset',linkLength)
                             .attr('stroke-dasharray',`${linkLength}, ${linkLength}`);
-
                         const offset = animatePath.append('animate')
                             .attr('attributeName','stroke-dashoffset')
                             .attr('id',d=> `${d.id}animate`)
@@ -318,7 +327,16 @@ function App() {
                             .attr('attributeName','stroke')
                             .attr('begin',d => `${d.id}animate.end`)
                             .attr('dur',`2s`)
-                            .attr('values', '#FF0000; #bfbfbf');
+                            .attr('values', '#FF0000; #FF0000')
+                            .on('beginEvent', (e,d) => handleBegin(d))
+                            .on('endEvent', (e,d) => handleEnd(d));
+
+                        link.append('animate')
+                            .attr('attributeName','marker-end')
+                            .attr('begin',d => `${d.id}animate.end`)
+                            .attr('dur',`2s`)
+                            .attr('values', 'url(#start); url(#start)');
+
                         const dur = timeAccumulator(path);
                         offset.attr('dur',`${dur}s`);
                         animateMotion.attr('dur',`${dur}s`);
@@ -369,6 +387,20 @@ function App() {
         .append("svg:path")
         .attr('fill', '#bfbfbf')
         .attr("d", "M0,-5L10,0L0,5");
+
+      svg.append("svg:defs").selectAll("marker")
+          .data(["start"])
+          .enter().append("svg:marker")
+          .attr("id", String)
+          .attr("viewBox", "0 -5 10 10")
+          .attr("refX", 9)
+          .attr("refY", 0)
+          .attr("markerWidth", 6)
+          .attr("markerHeight", 6)
+          .attr("orient", "auto")
+          .append("svg:path")
+          .attr('fill', '#ff0000')
+          .attr("d", "M0,-5L10,0L0,5");
 
       const link = svg.append("g")
           .attr("fill", "currentColor")
