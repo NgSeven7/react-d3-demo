@@ -1,0 +1,91 @@
+@import '~antd/dist/antd.css';
+
+.butt {
+  float: right;
+  margin-right: 10px;
+  i {
+    color: #91d5ff;
+  }
+}
+
+.silderStyle{
+  margin-top: 20px;
+}
+
+.ant-slider {
+  height: 20px !important;
+  width: 845px !important;
+  background-image: url('./tup.jpg');
+  background-repeat: round;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+
+.ant-slider-step {
+  height: 20px !important;
+  z-index: 5;
+}
+
+.ant-slider-rail {
+  height: 20px !important;
+  opacity: 0 !important;
+  z-index: 5;
+}
+
+.ant-slider-track {
+  height: 20px !important;
+  /* background-color: #91d5ff; */
+  background-color: rgba(255,255,255,0.4) !important;
+  border-right: 2px solid rgba(235,97,0,1) !important;
+  z-index: 5;
+}
+.ant-slider-mark {
+  background-color: rgba(255,255,255,0.4) !important;
+}
+.ant-slider-handle :hover {
+  border: solid 2px #EB6100 !important;
+  z-index: 9;
+}
+.ant-slider-handle {
+  width: 8px !important;
+  height: 8px !important;
+  margin-top: 6px !important;
+  margin-left: -1px !important;
+  background-color: #fff;
+  border: solid 2px #EB6100 !important;
+  z-index: 9;
+}
+.silderSpanStyle {
+  font-size: 4px;
+  font-family: PingFang SC;
+  color: #000000;
+}
+
+#silderSpanL {
+  position: absolute;
+  top: 4px;
+  left: 4.5px;
+  z-index: 9;
+  user-select: none;
+}
+
+.ant-card-body {
+  padding: 0 !important;
+}
+
+#silderSpanR{
+    position: absolute;
+    top: 4px;
+    right: 4.5px;
+    z-index: 9;
+    user-select: none;
+}
+
+.playIconStyle{
+  color:#4285F4 !important;
+  font-size: 20px;
+  height: 20px;
+  line-height: 20px;
+  margin: 0 7px;
+}
