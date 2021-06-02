@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3'
 import { isEmpty, findIndex } from 'lodash';
 
+import SliderChart from './SliderChart';
 import './App.css';
 
 const preCsv = [
@@ -78,6 +79,7 @@ const preData = {
 };
 
 function App() {
+  const childRef = useRef();
   const [csv, setCsv] = useState(preCsv);
   const [data, setData] = useState(preData);
   let animatedPath = [];
@@ -566,8 +568,32 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
+  const playAnimation = (time, autoPlay) => {
+    console.log('playAnimation', time)
+    svg.node().setCurrentTime(time);
+    if (!autoPlay) {
+      svg.node().pauseAnimations();
+    } else {
+      svg.node().unpauseAnimations();
+    }
+    isPause = !autoPlay;
+  }
+
+  const pause = (autoPlay) => {
+    if (!autoPlay) {
+      svg.node().pauseAnimations();
+    } else {
+      svg.node().unpauseAnimations();
+    }
+    isPause = !autoPlay;
+  }
+
+
   return (
-    <div className="App" />
+    <div>
+      <SliderChart ref={childRef} pause={pause} playAnimation={playAnimation} csv={csv} processAnimation={processAnimation} svgObj={svg} />
+      <div className="App" />
+    </div>
   );
 }
 
