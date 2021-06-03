@@ -162,17 +162,17 @@ let SliderChart = (props, ref) => {
     let promise = new Promise((resolve, reject) => {
       const isPlay = !autoPlay
       setAutoPlay(!autoPlay)
-      resolve(isPlay);
+      if (time === 0) {
+        processAnimation(svgObj)
+      }
       pause(isPlay);
+      resolve(isPlay);
     })
     // 渲染完成后执行then()方法的操作代码 
     promise.then((isPlay) => {
       if (isPlay) {
         if (start.getTime() + time < end.getTime()) {
           timer.current = setInterval(() => {
-            if (time === 0) {
-              processAnimation(svgObj)
-            }
             // 设置定时器，每1000毫秒执行一次，每1000毫秒滑块长度增加进度条的1%长度
             time = time + (maxValue / 500)
             const process = new Date(start.getTime() + time)

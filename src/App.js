@@ -571,7 +571,6 @@ function App() {
   }, [data]);
 
   const playAnimation = (time, autoPlay) => {
-    console.log('playAnimation', time)
     svg.node().setCurrentTime(time);
     if (!autoPlay) {
       svg.node().pauseAnimations();
