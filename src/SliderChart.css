@@ -68,6 +68,8 @@
   left: 4.5px;
   z-index: 9;
   user-select: none;
+  /* 穿透效果 */
+  pointer-events: none;
 }
 
 .ant-card-body {
@@ -80,6 +82,7 @@
     right: 4.5px;
     z-index: 9;
     user-select: none;
+    pointer-events: none;
 }
 
 .playIconStyle{

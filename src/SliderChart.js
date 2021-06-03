@@ -101,7 +101,6 @@ let SliderChart = (props, ref) => {
     setEnd(eTime)
     setMaxValue(eTime.getTime() - sTime.getTime())
     setProcessTime(`${sTime.getFullYear()}/${sTime.getMonth() + 1}/${sTime.getDate()} ${sTime.getHours()}:${sTime.getMinutes()}:${sTime.getSeconds()}`)
-
     reactEcharts = echarts.init(document.getElementsByClassName('echartsIns')[0]);
     console.log('reactEcharts', reactEcharts.getOption())
     if (option) {
@@ -111,7 +110,6 @@ let SliderChart = (props, ref) => {
       });
       console.log('picBase64', picBase64)
       document.getElementById('img').setAttribute('src', picBase64);
-
     }
   }, []);
 
@@ -150,9 +148,18 @@ let SliderChart = (props, ref) => {
     if (isNaN(value)) {
       return;
     }
-    playAnimation(value / 1000 / 60 / 60 / 60, false)
-    setTimeValue(value)
-    setProcessTime(`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`)
+    let promise = new Promise((resolve, reject) => {
+      if (timeValue === 0) {
+        processAnimation(svgObj);
+      }
+      resolve();
+    })
+    // 渲染完成后执行then()方法的操作代码 
+    promise.then(() => {
+      playAnimation(Math.round(value / 1000 / 60 / 60 / 60, 10), false);
+      setTimeValue(value);
+      setProcessTime(`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);
+    })
   };
 
   const handlePlay = () => {
@@ -199,7 +206,7 @@ let SliderChart = (props, ref) => {
   return (
     <div>
       <Row className="chartStyle">
-        <Card title="">
+        <Card title="" >
           <ReactEcharts
             ref={chartRef}
             className="echartsIns"
