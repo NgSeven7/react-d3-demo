@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import * as d3 from 'd3'
 import { isEmpty, findIndex } from 'lodash';
 
@@ -369,12 +369,14 @@ function App() {
     }
   };
 
+
+  const svg = d3.create('svg')
+    .attr("viewBox", [-960 / 2, -960 / 2, 960, 960])
+    .style("font", "12px sans-serif");
+
   const draw = () => {
     d3.forceSimulation(nodes).force("link", d3.forceLink(links).id(d => d.id));
 
-    const svg = d3.create('svg')
-      .attr("viewBox", [-960 / 2, -960 / 2, 960, 960])
-      .style("font", "12px sans-serif");
 
     svg.append("svg:defs").selectAll("marker")
       .data(["end"])      // Different link/path types can be defined here

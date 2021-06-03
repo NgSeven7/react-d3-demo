@@ -6,6 +6,86 @@ import echarts from 'echarts';
 import './SliderChart.css';
 // import styles from './SliderChart.less';
 
+
+const preOption = {
+  grid: {
+    left: '0%',
+    right: '0%',
+    bottom: '0%',
+    height: '100%',
+    width: '100%',
+    containLabel: true
+  },
+  xAxis: {
+    type: 'category',
+    data: ['点', '击', '柱', '子', '或', '者', '两', '指', '在', '触', '屏', '上', '滑', '动', '能', '够', '自', '动', '缩', '放'],
+    axisLabel: {
+      show: false,
+      // inside: true,
+      textStyle: {
+        color: '#fff'
+      }
+    },
+    axisTick: {
+      show: false
+    },
+    axisLine: {
+      show: false
+    },
+    z: 10
+  },
+  yAxis: {
+    splitLine: {
+      show: false
+    },
+    axisLine: {
+      show: false
+    },
+    axisTick: {
+      show: false
+    },
+    axisLabel: {
+      show: false
+    }
+    // axisLabel: {
+    //   textStyle: {
+    //     color: '#999'
+    //   }
+    // }
+  },
+  // dataZoom: [
+  //   {
+  //     type: 'inside'
+  //   }
+  // ],
+  series: [{
+    data: [220, 182, 191, 234, 290, 330, 310, 123, 442, 321, 90, 149, 210, 122, 133, 334, 198, 123, 125, 220],
+    type: 'bar',
+    itemStyle: {
+      color: new echarts.graphic.LinearGradient(
+        0, 0, 0, 1,
+        [
+          { offset: 0, color: '#83bff6' },
+          { offset: 0.5, color: '#188df0' },
+          { offset: 1, color: '#188df0' }
+        ]
+      )
+    },
+    emphasis: {
+      itemStyle: {
+        color: new echarts.graphic.LinearGradient(
+          0, 0, 0, 1,
+          [
+            { offset: 0, color: '#2378f7' },
+            { offset: 0.7, color: '#2378f7' },
+            { offset: 1, color: '#83bff6' }
+          ]
+        )
+      }
+    },
+  }]
+};
+
 let SliderChart = (props, ref) => {
   const { csv, playAnimation, processAnimation, svgObj, pause } = props
   const [start, setStart] = useState(null);
@@ -16,10 +96,11 @@ let SliderChart = (props, ref) => {
   const [timeValue, setTimeValue] = useState(0);
   const [autoPlay, setAutoPlay] = useState(false);
   const [speedValue, setSpeedValue] = useState(50);
-  const [option, setOption] = useState({});
-
+  const [option, setOption] = useState(preOption);
+  let reactEcharts;
   //创建一个标识，通用容器
   let timer = useRef(null);
+  const chartRef = useRef();
 
   // 首次加载的时候运行一次,相当于componentDidMount
   useEffect(() => {
@@ -29,86 +110,31 @@ let SliderChart = (props, ref) => {
     setEnd(eTime)
     setMaxValue(eTime.getTime() - sTime.getTime())
     setProcessTime(`${sTime.getFullYear()}/${sTime.getMonth() + 1}/${sTime.getDate()} ${sTime.getHours()}:${sTime.getMinutes()}:${sTime.getSeconds()}`)
-    const obj = {
-      grid: {
-        left: '0%',
-        right: '0%',
-        bottom: '0%',
-        height: '100%',
-        width: '100%',
-        containLabel: true
-      },
-      xAxis: {
-        type: 'category',
-        data: ['点', '击', '柱', '子', '或', '者', '两', '指', '在', '触', '屏', '上', '滑', '动', '能', '够', '自', '动', '缩', '放'],
-        axisLabel: {
-          show: false,
-          // inside: true,
-          textStyle: {
-            color: '#fff'
-          }
-        },
-        axisTick: {
-          show: false
-        },
-        axisLine: {
-          show: false
-        },
-        z: 10
-      },
-      yAxis: {
-        splitLine: {
-          show: false
-        },
-        axisLine: {
-          show: false
-        },
-        axisTick: {
-          show: false
-        },
-        axisLabel: {
-          show: false
-        }
-        // axisLabel: {
-        //   textStyle: {
-        //     color: '#999'
-        //   }
-        // }
-      },
-      // dataZoom: [
-      //   {
-      //     type: 'inside'
-      //   }
-      // ],
-      series: [{
-        data: [220, 182, 191, 234, 290, 330, 310, 123, 442, 321, 90, 149, 210, 122, 133, 334, 198, 123, 125, 220],
-        type: 'bar',
-        itemStyle: {
-          color: new echarts.graphic.LinearGradient(
-            0, 0, 0, 1,
-            [
-              { offset: 0, color: '#83bff6' },
-              { offset: 0.5, color: '#188df0' },
-              { offset: 1, color: '#188df0' }
-            ]
-          )
-        },
-        emphasis: {
-          itemStyle: {
-            color: new echarts.graphic.LinearGradient(
-              0, 0, 0, 1,
-              [
-                { offset: 0, color: '#2378f7' },
-                { offset: 0.7, color: '#2378f7' },
-                { offset: 1, color: '#83bff6' }
-              ]
-            )
-          }
-        },
-      }]
-    };
-    setOption(obj)
+    console.log('chartRef', chartRef.current)
+    reactEcharts = echarts.init(chartRef.current);
+    console.log('reactEcharts1', reactEcharts)
   }, []);
+
+  useEffect(() => {
+    return () => {
+
+      // 需要在 count 更改时 componentDidUpdate（先于 document.title = ... 执行，遵守先清理后更新）
+      // 以及 componentWillUnmount 执行的内容
+      // reactEcharts = echarts.init(document.getElementsByClassName('echartsIns')[0]);
+
+      if (option) {
+        reactEcharts.setOption(option);
+        const picBase64 = reactEcharts.getDataURL({
+          pixelRatio: 2,
+          backgroundColor: '#E2ECFB'
+        });
+        console.log('picBase64', picBase64)
+        document.getElementById('img').setAttribute('src', picBase64);
+      }
+      console.log('reactEcharts', reactEcharts, option)
+
+    }
+  }, [option])
 
   useImperativeHandle(ref, () => ({
     getTimes: getTimes
@@ -195,6 +221,7 @@ let SliderChart = (props, ref) => {
       pixelRatio: 2,
       backgroundColor: '#E2ECFB'
     });
+    console.log('picBase64 click1', picBase64, option)
     document.getElementById('img').setAttribute('src', picBase64);
   }
 
@@ -207,13 +234,9 @@ let SliderChart = (props, ref) => {
   return (
     <div>
       <Row className="chartStyle">
-        <Card title="">
-          <ReactEcharts
-            className="echartsIns"
-            style={{ height: 20, width: 845, backgroundColor: '#E2ECFB' }}
-            option={option}
-            onEvents={events} />
-        </Card>
+        <div title="" ref={chartRef} style={{ width: '845px', height: '20px' }}>
+
+        </div>
       </Row>
       <Row className="silderStyle">
         <Col span={1}>
