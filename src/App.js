@@ -82,8 +82,8 @@ function App() {
   const childRef = useRef();
   const [csv, setCsv] = useState(preCsv);
   const [data, setData] = useState(preData);
+  const [isPause, setIsPause] = useState(false);
   let animatedPath = [];
-  let isPause = true;
   let isStart = true;
   let begin = 0.1;
   let startTime = '';
@@ -462,22 +462,7 @@ function App() {
       .selectAll("g")
       .data(nodes)
       .join("g")
-      .attr('class', d => d.className)
-      .on('click', (e, d) => {
-        if (d.id === 'Start') {
-          if (isStart) {
-            if (!isPause) {
-              svg.node().pauseAnimations();
-            } else {
-              svg.node().unpauseAnimations();
-            }
-            isPause = !isPause;
-          } else {
-            svg.node().setCurrentTime(0);
-            isStart = true;
-          }
-        }
-      });
+      .attr('class', d => d.className);
 
 
     svg.selectAll('.start')
@@ -570,29 +555,29 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
-  const playAnimation = (time, autoPlay) => {
+  const playAnimation = (time, isP) => {
+    // svg.node().setCurrentTime(time);
+    console.log('isPause',isP)
+    console.log('time',time)
+    if (!isP) {
+      svg.node().pauseAnimations();
+    } else {
+      svg.node().unpauseAnimations();
+    }
+  }
+
+  const setCurrentTime = (time) => {
     svg.node().setCurrentTime(time);
-    if (!autoPlay) {
-      svg.node().pauseAnimations();
-    } else {
-      svg.node().unpauseAnimations();
-    }
-    isPause = !autoPlay;
   }
 
-  const pause = (autoPlay) => {
-    if (!autoPlay) {
-      svg.node().pauseAnimations();
-    } else {
-      svg.node().unpauseAnimations();
-    }
-    isPause = !autoPlay;
+  const changePause = () => {
+    setIsPause(!isPause)
   }
-
+console.log('setIsPause',isPause)
 
   return (
     <div>
-      <SliderChart ref={childRef} pause={pause} playAnimation={playAnimation} csv={csv} processAnimation={processAnimation} svgObj={svg} />
+      <SliderChart ref={childRef} setCurrentTime={setCurrentTime} isPause={isPause} changePause={changePause} playAnimation={playAnimation} csv={csv} />
       <div className="App" />
     </div>
   );
