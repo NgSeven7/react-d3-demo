@@ -6,7 +6,6 @@ import echarts from 'echarts';
 import './SliderChart.css';
 // import styles from './SliderChart.less';
 
-
 const preOption = {
   grid: {
     left: '0%',
@@ -47,20 +46,11 @@ const preOption = {
     axisLabel: {
       show: false
     }
-    // axisLabel: {
-    //   textStyle: {
-    //     color: '#999'
-    //   }
-    // }
   },
-  // dataZoom: [
-  //   {
-  //     type: 'inside'
-  //   }
-  // ],
   series: [{
     data: [220, 182, 191, 234, 290, 330, 310, 123, 442, 321, 90, 149, 210, 122, 133, 334, 198, 123, 125, 220],
     type: 'bar',
+    animation: false,
     itemStyle: {
       color: new echarts.graphic.LinearGradient(
         0, 0, 0, 1,
@@ -86,6 +76,8 @@ const preOption = {
   }]
 };
 
+
+
 let SliderChart = (props, ref) => {
   const { csv, playAnimation, processAnimation, svgObj, pause } = props
   const [start, setStart] = useState(null);
@@ -95,7 +87,6 @@ let SliderChart = (props, ref) => {
   const [processTime, setProcessTime] = useState('');
   const [timeValue, setTimeValue] = useState(0);
   const [autoPlay, setAutoPlay] = useState(false);
-  const [speedValue, setSpeedValue] = useState(50);
   const [option, setOption] = useState(preOption);
   let reactEcharts;
   //创建一个标识，通用容器
@@ -110,31 +101,20 @@ let SliderChart = (props, ref) => {
     setEnd(eTime)
     setMaxValue(eTime.getTime() - sTime.getTime())
     setProcessTime(`${sTime.getFullYear()}/${sTime.getMonth() + 1}/${sTime.getDate()} ${sTime.getHours()}:${sTime.getMinutes()}:${sTime.getSeconds()}`)
-    console.log('chartRef', chartRef.current)
-    reactEcharts = echarts.init(chartRef.current);
-    console.log('reactEcharts1', reactEcharts)
-  }, []);
 
-  useEffect(() => {
-    return () => {
-
-      // 需要在 count 更改时 componentDidUpdate（先于 document.title = ... 执行，遵守先清理后更新）
-      // 以及 componentWillUnmount 执行的内容
-      // reactEcharts = echarts.init(document.getElementsByClassName('echartsIns')[0]);
-
-      if (option) {
-        reactEcharts.setOption(option);
-        const picBase64 = reactEcharts.getDataURL({
-          pixelRatio: 2,
-          backgroundColor: '#E2ECFB'
-        });
-        console.log('picBase64', picBase64)
-        document.getElementById('img').setAttribute('src', picBase64);
-      }
-      console.log('reactEcharts', reactEcharts, option)
+    reactEcharts = echarts.init(document.getElementsByClassName('echartsIns')[0]);
+    console.log('reactEcharts', reactEcharts.getOption())
+    if (option) {
+      const picBase64 = reactEcharts.getDataURL({
+        pixelRatio: 2,
+        backgroundColor: '#E2ECFB'
+      });
+      console.log('picBase64', picBase64)
+      document.getElementById('img').setAttribute('src', picBase64);
 
     }
-  }, [option])
+  }, []);
+
 
   useImperativeHandle(ref, () => ({
     getTimes: getTimes
@@ -215,28 +195,17 @@ let SliderChart = (props, ref) => {
 
   }
 
-  const click1 = (value: any) => {
-    const reactEcharts = echarts.init(document.getElementsByClassName('echartsIns')[0]);
-    const picBase64 = reactEcharts.getDataURL({
-      pixelRatio: 2,
-      backgroundColor: '#E2ECFB'
-    });
-    console.log('picBase64 click1', picBase64, option)
-    document.getElementById('img').setAttribute('src', picBase64);
-  }
-
-  const events = {
-    'click': click1
-  }
-
-
 
   return (
     <div>
       <Row className="chartStyle">
-        <div title="" ref={chartRef} style={{ width: '845px', height: '20px' }}>
-
-        </div>
+        <Card title="">
+          <ReactEcharts
+            ref={chartRef}
+            className="echartsIns"
+            style={{ height: 20, width: 845, display: 'none' }}
+            option={option} />
+        </Card>
       </Row>
       <Row className="silderStyle">
         <Col span={1}>
@@ -254,7 +223,7 @@ let SliderChart = (props, ref) => {
               value={typeof timeValue === 'number' ? timeValue : 0}
               step={0.01}
             />
-            <img id="img" style={{ width: 845, height: 20, position: 'absolute', top: 0, zIndex: 1 }} />
+            <img id="img" style={{ width: 845, height: 20, position: 'absolute', top: 0 }} />
             <span id="silderSpanR" className="silderSpanStyle">{end ? `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()}` : null}</span>
           </div>
         </Col>
