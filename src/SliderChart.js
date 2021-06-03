@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Slider, Row, Col, Card } from "antd";
 import { Icon } from "@ant-design/compatible";
 import ReactEcharts from "echarts-for-react";
@@ -96,7 +96,7 @@ const preOption = {
   ],
 };
 
-let SliderChart = (props, ref) => {
+let SliderChart = props => {
   const { csv, playAnimation, isPause, changePause, setCurrentTime } = props;
   const [start, setStart] = useState(null);
   const [end, setEnd] = useState(null);
@@ -124,22 +124,19 @@ let SliderChart = (props, ref) => {
     }
   }, []);
 
-  const dateFormat = (date) => {
+  const dateFormat = date => {
     return `${date.getFullYear()}/${
       date.getMonth() + 1
     }/${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
   };
-  useImperativeHandle(ref, () => ({
-    getTimes: getTimes,
-  }));
 
   const getTimes = () => {
     let sTime = null;
     let eTime = null;
     csv &&
-      csv.map((item) => {
+      csv.map(item => {
         item.paths &&
-          item.paths.map((path) => {
+          item.paths.map(path => {
             const startTime = new Date(path.startTime);
             const endTime = new Date(path.endTime);
             if (!sTime || (sTime && sTime.getTime() >= startTime.getTime())) {
@@ -159,7 +156,7 @@ let SliderChart = (props, ref) => {
     return res;
   };
 
-  const onChange = (value) => {
+  const onChange = value => {
     if (isNaN(value)) {
       return;
     }
@@ -170,10 +167,9 @@ let SliderChart = (props, ref) => {
     let time = timeValue;
     // 清楚定时器
     clearInterval(timer.current);
-    const isP = !isPause
-    playAnimation(time,isP);
+    playAnimation();
     changePause();
-    if (isP) {
+    if (isPause) {
       if (start.getTime() + time < end.getTime()) {
         timer.current = setInterval(() => {
           // 设置定时器，每1000毫秒执行一次，每1000毫秒滑块长度增加进度条的1%长度
@@ -204,7 +200,7 @@ let SliderChart = (props, ref) => {
         <Col span={1}>
           <Icon
             className="playIconStyle"
-            type={isPause ? "pause" : "caret-right"}
+            type={!isPause ? "pause" : "caret-right"}
             onClick={() => handlePlay()}
           />
         </Col>
@@ -236,5 +232,4 @@ let SliderChart = (props, ref) => {
   );
 };
 
-SliderChart = forwardRef(SliderChart);
 export default SliderChart;

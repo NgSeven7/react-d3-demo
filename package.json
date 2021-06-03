@@ -18,6 +18,17 @@
     "react-scripts": "4.0.3",
     "web-vitals": "^1.0.1"
   },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --single-quote --write",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "lint-staged": "^9.5.0",
+    "prettier": "^1.19.1",
+    "react-scripts": "4.0.3"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
