@@ -985,10 +985,16 @@ function App() {
 
   const setCurrentTime = time => {
     currentSvg.current.setCurrentTime(time);
+    currentSvg.current.pauseAnimations();
   };
 
-  const changePause = () => {
-    setIsPause(!isPause);
+  const changePause = (value) => {
+      console.log('changePause',value)
+      if(value === 'end'){
+        setIsPause(true);
+      }else{
+        setIsPause(!isPause);
+      }
   };
 
   return (

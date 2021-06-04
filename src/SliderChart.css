@@ -1,68 +1,60 @@
 @import '~antd/dist/antd.css';
 
-.butt {
-  float: right;
-  margin-right: 10px;
-  i {
-    color: #91d5ff;
-  }
-}
 
-.silderStyle{
+.sliderStyle{
   margin-top: 20px;
 }
 
 .ant-slider {
-  height: 20px !important;
-  width: 845px !important;
-  background-image: url('./tup.jpg');
+  height: 20px;
+  width: 845px;
   background-repeat: round;
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0;
+  padding: 0;
 }
 
 
 .ant-slider-step {
-  height: 20px !important;
+  height: 20px;
   z-index: 5;
 }
 
 .ant-slider-rail {
-  height: 20px !important;
+  height: 20px;
   opacity: 0 !important;
   z-index: 5;
 }
 
 .ant-slider-track {
-  height: 20px !important;
+  height: 20px;
   /* background-color: #91d5ff; */
-  background-color: rgba(255,255,255,0.4) !important;
-  border-right: 2px solid rgba(235,97,0,1) !important;
+  background-color: rgba(255,255,255,0.4);
+  border-right: 2px solid rgba(235,97,0,1);
   z-index: 5;
 }
 .ant-slider-mark {
-  background-color: rgba(255,255,255,0.4) !important;
+  background-color: rgba(255,255,255,0.4);
 }
 .ant-slider-handle :hover {
-  border: solid 2px #EB6100 !important;
+  border: solid 2px #EB6100;
   z-index: 9;
 }
 .ant-slider-handle {
-  width: 8px !important;
-  height: 8px !important;
-  margin-top: 6px !important;
-  margin-left: -1px !important;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  margin-left: -1px;
   background-color: #fff;
-  border: solid 2px #EB6100 !important;
+  border: solid 2px #EB6100;
   z-index: 9;
 }
-.silderSpanStyle {
+.sliderSpanStyle {
   font-size: 4px;
   font-family: PingFang SC;
   color: #000000;
 }
 
-#silderSpanL {
+#sliderSpanL {
   position: absolute;
   top: 4px;
   left: 4.5px;
@@ -72,11 +64,8 @@
   pointer-events: none;
 }
 
-.ant-card-body {
-  padding: 0 !important;
-}
 
-#silderSpanR{
+#sliderSpanR{
     position: absolute;
     top: 4px;
     right: 4.5px;
@@ -86,7 +75,7 @@
 }
 
 .playIconStyle{
-  color:#4285F4 !important;
+  color:#4285F4;
   font-size: 20px;
   height: 20px;
   line-height: 20px;

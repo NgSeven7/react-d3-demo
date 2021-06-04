@@ -17,28 +17,6 @@ const preOption = {
   },
   xAxis: {
     type: "category",
-    data: [
-      "点",
-      "击",
-      "柱",
-      "子",
-      "或",
-      "者",
-      "两",
-      "指",
-      "在",
-      "触",
-      "屏",
-      "上",
-      "滑",
-      "动",
-      "能",
-      "够",
-      "自",
-      "动",
-      "缩",
-      "放",
-    ],
     axisLabel: {
       show: false,
       // inside: true,
@@ -97,23 +75,15 @@ const preOption = {
 };
 
 let SliderChart = props => {
-  const { csv, playAnimation, isPause, changePause, setCurrentTime } = props;
-  const [start, setStart] = useState(null);
-  const [end, setEnd] = useState(null);
-  const [maxValue, setMaxValue] = useState(0);
+  const { csv, playAnimation, isPause, changePause, setCurrentTime, sTime, eTime, animateDur } = props;
   const [timeValue, setTimeValue] = useState(0);
   const [option, setOption] = useState(preOption);
   const minValue = 0;
   //创建一个标识，通用容器
-  let timer = useRef(null);
+  let timer = useRef(null)
 
   // 首次加载的时候运行一次,相当于componentDidMount
   useEffect(() => {
-    const times = getTimes();
-    const { sTime, eTime } = times;
-    setStart(sTime);
-    setEnd(eTime);
-    setMaxValue(eTime.getTime() - sTime.getTime());
     const reactEcharts = echarts.init(document.getElementsByClassName("echartsIns")[0]);
     if (option) {
       const picBase64 = reactEcharts.getDataURL({
@@ -124,35 +94,18 @@ let SliderChart = props => {
     }
   }, []);
 
-  const dateFormat = date => {
-    return `${date.getFullYear()}/${
-      date.getMonth() + 1
-    }/${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+  const timeFormat = date => {
+    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
   };
 
-  const getTimes = () => {
-    let sTime = null;
-    let eTime = null;
-    csv &&
-      csv.map(item => {
-        item.paths &&
-          item.paths.map(path => {
-            const startTime = new Date(path.startTime);
-            const endTime = new Date(path.endTime);
-            if (!sTime || (sTime && sTime.getTime() >= startTime.getTime())) {
-              sTime = startTime;
-            }
-            if (!eTime || (eTime && eTime.getTime() <= endTime.getTime())) {
-              eTime = endTime;
-            }
-          });
-      });
-    return { sTime: sTime, eTime: eTime };
+  
+  const dateFormat = date => {
+    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
   };
 
   const formatter = (value) => {
-    const date = start ? new Date(start.getTime() + value) : null;
-    const res = start ? dateFormat(date) : null;
+    const date = sTime ? new Date(sTime.getTime() + value) : null;
+    const res = sTime ? timeFormat(date) : null;
     return res;
   };
 
@@ -168,17 +121,18 @@ let SliderChart = props => {
     // 清楚定时器
     clearInterval(timer.current);
     playAnimation();
-    changePause();
+    changePause('start');
     if (isPause) {
-      if (start.getTime() + time < end.getTime()) {
+      if (sTime.getTime() + time < eTime.getTime()) {
         timer.current = setInterval(() => {
           // 设置定时器，每1000毫秒执行一次，每1000毫秒滑块长度增加进度条的1%长度
-          time = time + maxValue / 500;
-          const process = new Date(start.getTime() + time);
-          if (process.getTime() >= end.getTime()) {
+          time = time + 20 / 1000;
+          if (time >= animateDur) {
+            console.log('end')
+            changePause('end');
+            setCurrentTime(0);
             clearInterval(timer.current);
-            changePause();
-            setTimeValue(maxValue);
+            setTimeValue(0);
           } else {
             setTimeValue(time);
           }
@@ -196,7 +150,7 @@ let SliderChart = props => {
           option={option}
         />
       </Row>
-      <Row className="silderStyle">
+      <Row className="sliderStyle">
         <Col span={1}>
           <Icon
             className="playIconStyle"
@@ -206,13 +160,13 @@ let SliderChart = props => {
         </Col>
         <Col span={18}>
           <div style={{ width: 845, position: "absolute" }}>
-            <span id="silderSpanL" className="silderSpanStyle">
-              {start ? dateFormat(start) : null}
+            <span id="sliderSpanL" className="sliderSpanStyle">
+              {sTime ? dateFormat(sTime) : null}
             </span>
             <Slider
               tipFormatter={formatter}
               min={minValue}
-              max={maxValue}
+              max={animateDur}
               onChange={onChange}
               onAfterChange={(value) => {setCurrentTime(value)}}
               value={typeof timeValue === "number" ? timeValue : 0}
@@ -222,8 +176,8 @@ let SliderChart = props => {
               id="img"
               style={{ width: 845, height: 20, position: "absolute", top: 0 }}
             />
-            <span id="silderSpanR" className="silderSpanStyle">
-              {end ? dateFormat(end) : null}
+            <span id="sliderSpanR" className="sliderSpanStyle">
+              {eTime ? dateFormat(eTime) : null}
             </span>
           </div>
         </Col>
