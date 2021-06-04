@@ -16,7 +16,7 @@ const preCsv = [
         href: "Start00001",
         startTime: "2021-05-11 09:32:00",
         endTime: "2021-05-11 09:32:01",
-        pathDur: 86400,
+        pathDur: 1000,
         activityDur: 4000
       },
       {
@@ -26,7 +26,7 @@ const preCsv = [
         href: "Flow00001",
         startTime: "2021-05-11 15:33:01",
         endTime: "2021-05-12 08:32:01",
-        pathDur: 86400,
+        pathDur: 61140000,
         activityDur: 4000
       },
       {
@@ -36,7 +36,7 @@ const preCsv = [
         href: "Flow00002",
         startTime: "2021-05-12 09:32:01",
         endTime: "2021-05-12 18:32:01",
-        pathDur: 86400,
+        pathDur: 32400000,
         activityDur: 4000
       },
       {
@@ -46,7 +46,7 @@ const preCsv = [
         href: "Flow00003",
         startTime: "2021-05-13 09:32:01",
         endTime: "2021-05-13 10:32:01",
-        pathDur: 86400,
+        pathDur: 3600000,
         activityDur: 4000
       },
       {
@@ -56,7 +56,7 @@ const preCsv = [
         href: "Flow00004",
         startTime: "2021-05-13 19:32:01",
         endTime: "2021-05-14 02:32:01",
-        pathDur: 86400,
+        pathDur: 25200000,
         activityDur: 4000
       },
       {
@@ -66,7 +66,7 @@ const preCsv = [
         href: "Flow00005",
         startTime: "2021-05-14 06:32:01",
         endTime: "2021-05-14 08:32:01",
-        pathDur: 86400,
+        pathDur: 7200000,
         activityDur: 4000
       },
       {
@@ -76,10 +76,11 @@ const preCsv = [
         href: "End00001",
         startTime: "2021-05-14 09:32:01",
         endTime: "2021-05-14 18:32:01",
-        pathDur: 86400,
-        activityDur: 4000
+        pathDur: 32400000,
+        activityDur: 4000,
+        isEnd: true
       }
-    ]
+    ]  //161941000
   },
   {
     id: "case_2",
@@ -91,7 +92,7 @@ const preCsv = [
         href: "Start00001",
         startTime: "2021-05-11 14:32:00",
         endTime: "2021-05-11 17:33:01",
-        pathDur: 86400,
+        pathDur: 10861000,
         activityDur: 4000
       },
       {
@@ -101,7 +102,7 @@ const preCsv = [
         href: "Flow00001",
         startTime: "2021-05-11 17:33:01",
         endTime: "2021-05-12 09:32:01",
-        pathDur: 86400,
+        pathDur: 57540000,
         activityDur: 4000
       },
       {
@@ -111,7 +112,7 @@ const preCsv = [
         href: "Flow00002",
         startTime: "2021-05-12 09:32:01",
         endTime: "2021-05-12 13:32:01",
-        pathDur: 86400,
+        pathDur: 14400000,
         activityDur: 4000
       },
       {
@@ -121,7 +122,7 @@ const preCsv = [
         href: "Flow00006",
         startTime: "2021-05-13 13:32:01",
         endTime: "2021-05-13 23:32:01",
-        pathDur: 86400,
+        pathDur: 36000000,
         activityDur: 4000
       },
       {
@@ -129,9 +130,9 @@ const preCsv = [
         source: "HTC",
         target: "Apple",
         href: "Flow00005",
-        startTime: "2021-05-14 23:32:01",
+        startTime: "2021-05-13 23:32:01",
         endTime: "2021-05-14 12:32:01",
-        pathDur: 86400,
+        pathDur: 46800000,
         activityDur: 4000
       },
       {
@@ -141,7 +142,7 @@ const preCsv = [
         href: "End00001",
         startTime: "2021-05-14 12:32:01",
         endTime: "2021-05-14 22:32:01",
-        pathDur: 86400,
+        pathDur: 36000000,
         activityDur: 4000
       }
     ]
@@ -156,7 +157,7 @@ const preCsv = [
         href: "Start00001",
         startTime: "2021-05-12 08:32:00",
         endTime: "2021-05-12 17:33:01",
-        pathDur: 86400,
+        pathDur: 32461000,
         activityDur: 4000
       },
       {
@@ -166,7 +167,7 @@ const preCsv = [
         href: "Flow00001",
         startTime: "2021-05-12 17:33:01",
         endTime: "2021-05-12 23:32:01",
-        pathDur: 86400,
+        pathDur: 21540000,
         activityDur: 4000
       },
       {
@@ -176,7 +177,7 @@ const preCsv = [
         href: "Flow00002",
         startTime: "2021-05-12 23:32:01",
         endTime: "2021-05-13 13:32:01",
-        pathDur: 86400,
+        pathDur: 50400000,
         activityDur: 4000
       },
       {
@@ -186,7 +187,7 @@ const preCsv = [
         href: "Flow00003",
         startTime: "2021-05-13 13:32:01",
         endTime: "2021-05-13 22:32:01",
-        pathDur: 86400,
+        pathDur: 32400000,
         activityDur: 4000
       },
       {
@@ -196,7 +197,7 @@ const preCsv = [
         href: "Flow00007",
         startTime: "2021-05-13 22:32:01",
         endTime: "2021-05-14 12:32:01",
-        pathDur: 86400,
+        pathDur: 50400000,
         activityDur: 4000
       },
       {
@@ -206,9 +207,8 @@ const preCsv = [
         href: "End00001",
         startTime: "2021-05-14 12:32:01",
         endTime: "2021-05-14 22:32:01",
-        pathDur: 86400,
-        activityDur: 4000,
-        isEnd: true
+        pathDur: 36000000,
+        activityDur: 4000
       }
     ]
   },
@@ -222,7 +222,7 @@ const preCsv = [
         href: "Start00002",
         startTime: "2021-05-12 08:32:00",
         endTime: "2021-05-12 17:33:01",
-        pathDur: 86400,
+        pathDur: 32461000,
         activityDur: 4000
       },
       {
@@ -232,7 +232,7 @@ const preCsv = [
         href: "Flow00008",
         startTime: "2021-05-12 17:33:01",
         endTime: "2021-05-12 23:32:01",
-        pathDur: 86400,
+        pathDur: 21540000,
         activityDur: 4000
       },
       {
@@ -242,7 +242,7 @@ const preCsv = [
         href: "Flow00005",
         startTime: "2021-05-13 22:32:01",
         endTime: "2021-05-14 12:32:01",
-        pathDur: 86400,
+        pathDur: 50400000,
         activityDur: 4000
       },
       {
@@ -252,7 +252,7 @@ const preCsv = [
         href: "End00001",
         startTime: "2021-05-14 12:32:01",
         endTime: "2021-05-14 22:32:01",
-        pathDur: 86400,
+        pathDur: 36000000,
         activityDur: 4000
       }
     ]
@@ -444,6 +444,8 @@ const preData = {
 function App() {
   const [csv, setCsv] = useState(preCsv);
   const [data, setData] = useState(preData);
+  const [animateDur, setAnimateDur] = useState(null);
+  const [eTime, setETime] = useState(null);
   const [isPause, setIsPause] = useState(true);
   const currentSvg = useRef(null);
   let animatedPath = [];
@@ -740,6 +742,10 @@ function App() {
               });
             }
             if (index + 1 === paths.length) {
+                if(path.isEnd){
+                    setETime(new Date(path.endTime));
+                    setAnimateDur(begin);
+                }
               animateMotion.on("endEvent", () => {
                 svg.selectAll(`#${id}`).style("display", "none");
                 if (path.isEnd) {
@@ -990,6 +996,9 @@ function App() {
       <SliderChart
         setCurrentTime={setCurrentTime}
         isPause={isPause}
+        sTime={new Date(csv[0].paths[0].startTime)}
+        eTime={eTime}
+        animateDur={animateDur}
         changePause={changePause}
         playAnimation={playAnimation}
         csv={csv}
