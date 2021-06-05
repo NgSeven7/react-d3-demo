@@ -114,6 +114,7 @@ let SliderChart = props => {
       return;
     }
     setTimeValue(value);
+    setCurrentTime(value)
   };
 
   const handlePlay = () => {
@@ -125,7 +126,7 @@ let SliderChart = props => {
     if (isPause) {
       if (sTime.getTime() + time < eTime.getTime()) {
         timer.current = setInterval(() => {
-          // 设置定时器，每1000毫秒执行一次，每1000毫秒滑块长度增加进度条的1%长度
+          // 设置定时器，每20毫秒执行一次，每20毫秒滑块时间值增加20/1000
           time = time + 20 / 1000;
           if (time >= animateDur) {
             console.log('end')
@@ -168,10 +169,12 @@ let SliderChart = props => {
               min={minValue}
               max={animateDur}
               onChange={onChange}
-              onAfterChange={(value) => {setCurrentTime(value)}}
+              onAfterChange={(value) => {changePause('end')}}
               value={typeof timeValue === "number" ? timeValue : 0}
               step={0.01}
             />
+
+            
             <img
               id="img"
               style={{ width: 845, height: 20, position: "absolute", top: 0 }}

@@ -907,8 +907,8 @@ function App() {
       .attr("height", d => d.height)
       .attr("rx", 5)
       .attr("ry", 5)
-      .attr("stroke", "black")
-      .attr("stroke-width", 1.5)
+      .attr("stroke", "#C1D1EB")
+      .attr("stroke-width", 0.5)
       .attr("fill", "#fff");
 
     activity
@@ -1009,7 +1009,7 @@ function App() {
         playAnimation={playAnimation}
         csv={csv}
       />
-      <div className="App" />
+      <div className="App" style={{width:980, height: 600}}/>
     </div>
   );
 }
